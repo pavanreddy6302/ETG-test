@@ -167,10 +167,10 @@ resource "aws_iam_role_policy_attachment" "github_actions_eks_admin" {
 #  policy_arn = aws_iam_policy.eks_admin.arn
 #}
 
-resource "aws_iam_user_policy_attachment" "sohail_eks_admin" {
-  user       = data.aws_iam_user.sohail_quazi.user_name
-  policy_arn = aws_iam_policy.eks_admin.arn
-}
+# resource "aws_iam_user_policy_attachment" "sohail_eks_admin" {
+#   user       = data.aws_iam_user.sohail_quazi.user_name
+#   policy_arn = aws_iam_policy.eks_admin.arn
+# }
 
 #add users if you want to enable admin access to the eks cluster
 #resource "aws_iam_user_policy_attachment" "second_user_eks_admin" {
@@ -203,14 +203,14 @@ resource "aws_eks_access_entry" "cluster_admin_access" {
 #}
 
 # Access entry for sohail.quazi@hcl.com
-resource "aws_eks_access_entry" "sohail_quazi_access" {
-  cluster_name  = aws_eks_cluster.eks_cluster.name
-  principal_arn = data.aws_iam_user.sohail_quazi.arn
-  type          = "STANDARD"
+# resource "aws_eks_access_entry" "sohail_quazi_access" {
+#   cluster_name  = aws_eks_cluster.eks_cluster.name
+#   principal_arn = data.aws_iam_user.sohail_quazi.arn
+#   type          = "STANDARD"
   
-  # Use "masters" as a valid group name
-  kubernetes_groups = ["masters"]
-}
+#   # Use "masters" as a valid group name
+#   kubernetes_groups = ["masters"]
+# }
 
 # Access entry for the second user
 #resource "aws_eks_access_entry" "second_user_access" {
