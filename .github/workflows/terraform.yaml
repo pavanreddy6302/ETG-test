@@ -34,9 +34,12 @@ jobs:
           terraform validate
           terraform plan
 
+      - name : terraform Destroy
+        run : terraform destroy -auto-approve 
+
       # Terraform Apply (without tfplan file)
-      - name: Terraform Apply
-        run: terraform apply -auto-approve
+      # - name: Terraform Apply
+      #   run: terraform apply -auto-approve
 
       # # Install kubectl for EKS verification
       # - name: Install kubectl
