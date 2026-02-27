@@ -1,0 +1,12 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: gp3-encrypted
+provisioner: ebs.csi.aws.com
+parameters:
+  type: gp3
+  encrypted: "true"
+  fstype: ext4  # File system type (ext4) for the volume
+reclaimPolicy: "Delete"
+allowVolumeExpansion: true  # Corrected to boolean (true, not "true")
+volumeBindingMode: "Immediate"
