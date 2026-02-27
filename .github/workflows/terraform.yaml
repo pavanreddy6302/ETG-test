@@ -1,0 +1,214 @@
+name: terraform-aws-deployment
+
+on:
+  # push:
+  #   branches:
+  #     - test-eks-px-aps1
+
+jobs:
+  terraform_deployment:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./terraform
+    steps:
+      - uses: actions/checkout@v4
+
+      # Set up Terraform
+      - uses: hashicorp/setup-terraform@v3
+
+      # AWS credentials
+      - uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: us-east-1
+
+      # Terraform Init & Plan (without -out)
+      - name: Terraform Init & Plan
+        run: |
+          terraform init -reconfigure
+          terraform refresh
+          terraform validate
+          terraform plan
+
+      # Terraform Apply (without tfplan file)
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
+
+      # # Install kubectl for EKS verification
+      # - name: Install kubectl
+      #   run: |
+      #     curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+      #     chmod +x kubectl
+      #     sudo mv kubectl /usr/local/bin/
+
+      # # Configure kubectl to access the EKS cluster
+      # - name: Configure kubectl
+      #   run: aws eks update-kubeconfig --name demo-cluster --region ap-south-1
+
+      # # Verify EKS cluster by getting nodes and pods
+      # - name: Verify EKS
+      #   run: |
+      #     kubectl get nodes
+      #     kubectl get pods -A
+
+      # - name: Install StorageClass
+      #   run: kubectl apply -f storageclass.yaml
+
+      # - name: Create kubernetes secrets
+      #   run: |-
+      #     echo ${{ secrets.CF_TEST_SECRET }} | base64 --decode > px-all-secrets.yaml
+      #     kubectl apply -f px-all-secrets.yaml 
+
+      # - name: Create gcr secrets
+      #   run: |-
+      #     echo ${{ secrets.HC_GCR_DOCKER_SECRET }} | base64 --decode > hc-gcr-secrets.yaml
+      #     kubectl apply -f hc-gcr-secrets.yaml
+
+  # Auth-cluster:
+  #   runs-on: ubuntu-latest
+  #   defaults:
+  #     run:
+  #       working-directory: ./db-terraform
+  #   needs: terraform_deployment
+  #   name: 'Auth-cluster & helm deploy'
+  #   steps:
+  #     - uses: actions/checkout@v4
+
+  #     # Set up Terraform
+  #     - uses: hashicorp/setup-terraform@v3
+
+  #     # AWS credentials
+  #     - uses: aws-actions/configure-aws-credentials@v2
+  #       with:
+  #         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  #         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  #         aws-region: ap-south-1
+
+  #     # Terraform Init & Plan (without -out)
+  #     - name: Terraform Init & Plan
+  #       run: |
+  #         terraform init -reconfigure
+  #         terraform refresh
+  #         terraform validate
+  #         terraform plan
+
+  #     # Terraform Apply (without tfplan file)
+  #     - name: Terraform Apply
+  #       run: terraform apply -auto-approve
+
+  #     # Install kubectl for EKS verification
+  #     - name: Install kubectl
+  #       run: |
+  #         curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+  #         chmod +x kubectl
+  #         sudo mv kubectl /usr/local/bin/
+
+  #     # Configure kubectl to access the EKS cluster
+  #     - name: Configure kubectl
+  #       run: aws eks update-kubeconfig --name demo-cluster --region ap-south-1
+
+  #     # Verify EKS cluster by getting nodes and pods
+  #     - name: Verify EKS
+  #       run: |
+  #         kubectl get nodes
+  #         kubectl get pods -A
+
+  # Deploy-services:
+  #   runs-on: ubuntu-latest
+  #   defaults:
+  #     run:
+  #       working-directory: ./tf-workflow
+  #   needs: [terraform_deployment, Auth-cluster]
+  #   name: 'Run dispatch and deploy services'
+  #   steps:
+  #     - uses: actions/checkout@v4
+
+  #     # Set up Terraform
+  #     - uses: hashicorp/setup-terraform@v3
+
+  #     # AWS credentials
+  #     - uses: aws-actions/configure-aws-credentials@v2
+  #       with:
+  #         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  #         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  #         aws-region: ap-south-1
+
+  #     # Terraform Init & Plan (without -out)
+  #     - name: Terraform Init & Plan
+  #       run: |
+  #         terraform init
+  #         terraform plan -var-file="variable.tfvars"
+
+  #     # Terraform Apply (without tfplan file)
+  #     - name: Terraform Apply
+  #       run: terraform apply -var-file="variable.tfvars" --auto-approve
+
+  #     # Install kubectl for EKS verification
+  #     - name: Install kubectl
+  #       run: |
+  #         curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+  #         chmod +x kubectl
+  #         sudo mv kubectl /usr/local/bin/
+
+  #     # Configure kubectl to access the EKS cluster
+  #     - name: Configure kubectl
+  #       run: aws eks update-kubeconfig --name demo-cluster --region ap-south-1
+
+  #     # Verify EKS cluster by getting nodes and pods
+  #     - name: Verify EKS
+  #       run: |
+  #         kubectl get nodes
+  #         kubectl get pods -A
+
+  # Deploy-db-autorestore:
+  #   runs-on: ubuntu-latest
+  #   defaults:
+  #     run:
+  #       working-directory: ./db-data
+  #   # needs: [terraform_deployment, Auth-cluster, Deploy-services]
+  #   needs: [terraform_deployment, Auth-cluster, Deploy-services]
+  #   name: 'Deploy-db-autorestore'
+  #   steps:
+  #     - uses: actions/checkout@v4
+
+  #     # Set up Terraform
+  #     - uses: hashicorp/setup-terraform@v3
+
+  #     # AWS credentials
+  #     - uses: aws-actions/configure-aws-credentials@v2
+  #       with:
+  #         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  #         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  #         aws-region: ap-south-1
+
+  #     # Terraform Init & Plan (without -out)
+  #     - name: Terraform Init & Plan
+  #       run: |
+  #         terraform init -reconfigure
+  #         terraform refresh
+  #         terraform validate
+  #         terraform plan
+
+  #     # Terraform Apply (without tfplan file)
+  #     - name: Terraform Apply
+  #       run: terraform apply -auto-approve
+
+  #     # Install kubectl for EKS verification
+  #     - name: Install kubectl
+  #       run: |
+  #         curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+  #         chmod +x kubectl
+  #         sudo mv kubectl /usr/local/bin/
+
+  #     # Configure kubectl to access the EKS cluster
+  #     - name: Configure kubectl
+  #       run: aws eks update-kubeconfig --name demo-cluster --region ap-south-1
+
+  #     # Verify EKS cluster by getting nodes and pods
+  #     - name: Verify EKS
+  #       run: |
+  #         kubectl get nodes
+  #         kubectl get pods -A

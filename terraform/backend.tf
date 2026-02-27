@@ -1,7 +1,7 @@
 terraform {
   backend "s3" {
-    bucket      = "hhc-terraform-backend-s3"
-    key         = "terraform/cf/terraform.tfstate"
-    region      = "ap-south-1"  # Change this to your desired AWS region
+    bucket      = "etg-test1"
+    key         = "terraform.tfstate"
+    region      = "us-east-1"  # Change this to your desired AWS region
   }
 }
