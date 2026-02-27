@@ -90,9 +90,9 @@ resource "aws_secretsmanager_secret_version" "user_credentials" {
 #}
 
 # Reference existing IAM User for sohail.quazi@hcl.com
-data "aws_iam_user" "sohail_quazi" {
-  user_name = "sohail.quazi@hcl.com"
-}
+# data "aws_iam_user" "sohail_quazi" {
+#   user_name = "sohail.quazi@hcl.com"
+# }
 
 # Create a second IAM user (replace with actual name if needed)
 #resource "aws_iam_user" "second_user" {
