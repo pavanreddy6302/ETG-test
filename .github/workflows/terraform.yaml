@@ -1,6 +1,7 @@
 name: terraform-aws-deployment
 
 on:
+  workflow_dispatch:
   # push:
   #   branches:
   #     - test-eks-px-aps1
