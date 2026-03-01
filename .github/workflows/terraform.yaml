@@ -1,41 +1,41 @@
-# name: terraform-aws-deployment
+name: terraform-aws-deployment
 
-# on:
-#   workflow_dispatch:
-#   # push:
-#   #   branches:
-#   #     - test-eks-px-aps1
+on:
+  workflow_dispatch:
+  # push:
+  #   branches:
+  #     - test-eks-px-aps1
 
-# jobs:
-#   terraform_deployment:
-#     runs-on: ubuntu-latest
-#     defaults:
-#       run:
-#         working-directory: ./terraform
-#     steps:
-#       - uses: actions/checkout@v4
+jobs:
+  terraform_deployment:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./terraform
+    steps:
+      - uses: actions/checkout@v4
 
-#       # Set up Terraform
-#       - uses: hashicorp/setup-terraform@v3
+      # Set up Terraform
+      - uses: hashicorp/setup-terraform@v3
 
-#       # AWS credentials
-#       - uses: aws-actions/configure-aws-credentials@v2
-#         with:
-#           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-#           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
-#           aws-region: us-east-1
+      # AWS credentials
+      - uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: us-east-1
 
-#       # Terraform Init & Plan (without -out)
-#       - name: Terraform Init & Plan
-#         run: |
-#           terraform init -reconfigure
-#           terraform refresh
-#           terraform validate
-#           terraform plan
+      # Terraform Init & Plan (without -out)
+      - name: Terraform Init & Plan
+        run: |
+          terraform init -reconfigure
+          terraform refresh
+          terraform validate
+          terraform plan
 
-#       # - name : terraform Destroy
-#       #   run : terraform destroy -auto-approve 
+      - name : terraform Destroy
+        run : terraform destroy -auto-approve 
 
 #       # Terraform Apply (without tfplan file)
 #       - name: Terraform Apply
@@ -220,104 +220,104 @@
 
 
 
-name: terraform-aws-deployment
+# name: terraform-aws-deployment
 
-on:
-  workflow_dispatch:
+# on:
+#   workflow_dispatch:
 
-jobs:
-  terraform_deployment:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./terraform
+# jobs:
+#   terraform_deployment:
+#     runs-on: ubuntu-latest
+#     defaults:
+#       run:
+#         working-directory: ./terraform
 
-    env:
-      # >>> Set these to your actual EKS cluster values <<<
-      EKS_REGION: ap-south-1
-      CLUSTER_NAME: demo-cluster
-      ADMIN_ROLE_ARN: arn:aws:iam::<ACCOUNT_ID>:role/demo-cluster-eks-admin-role
+#     env:
+#       # >>> Set these to your actual EKS cluster values <<<
+#       EKS_REGION: ap-south-1
+#       CLUSTER_NAME: demo-cluster
+#       ADMIN_ROLE_ARN: arn:aws:iam::<ACCOUNT_ID>:role/demo-cluster-eks-admin-role
 
-    steps:
-      - uses: actions/checkout@v4
+#     steps:
+#       - uses: actions/checkout@v4
 
-      - uses: hashicorp/setup-terraform@v3
+#       - uses: hashicorp/setup-terraform@v3
 
-      # Your existing access keys are fine to run Terraform
-      - uses: aws-actions/configure-aws-credentials@v2
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
-          aws-region: us-east-1  # Terraform default region; EKS calls will use EKS_REGION below
+#       # Your existing access keys are fine to run Terraform
+#       - uses: aws-actions/configure-aws-credentials@v2
+#         with:
+#           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+#           aws-region: us-east-1  # Terraform default region; EKS calls will use EKS_REGION below
 
-      - name: Terraform Init & Plan
-        run: |
-          terraform init -reconfigure
-          terraform refresh
-          terraform validate
-          terraform plan
+#       - name: Terraform Init & Plan
+#         run: |
+#           terraform init -reconfigure
+#           terraform refresh
+#           terraform validate
+#           terraform plan
 
-      - name: Terraform Apply
-        run: terraform apply -auto-approve
+#       - name: Terraform Apply
+#         run: terraform apply -auto-approve
 
-      # ------------------------
-      # NEW: assume the EKS admin role that Terraform created
-      # ------------------------
-      - name: Assume EKS Admin Role
-        id: assume
-        shell: bash
-        run: |
-          sudo apt-get update -y && sudo apt-get install -y jq
-          CREDS_JSON=$(aws sts assume-role \
-            --role-arn "$ADMIN_ROLE_ARN" \
-            --role-session-name gha-eks-admin \
-            --duration-seconds 3600)
-          echo "AWS_ACCESS_KEY_ID=$(echo "$CREDS_JSON" | jq -r .Credentials.AccessKeyId)"       >> $GITHUB_ENV
-          echo "AWS_SECRET_ACCESS_KEY=$(echo "$CREDS_JSON" | jq -r .Credentials.SecretAccessKey)" >> $GITHUB_ENV
-          echo "AWS_SESSION_TOKEN=$(echo "$CREDS_JSON" | jq -r .Credentials.SessionToken)"         >> $GITHUB_ENV
-          echo "AWS_REGION=$EKS_REGION" >> $GITHUB_ENV
+#       # ------------------------
+#       # NEW: assume the EKS admin role that Terraform created
+#       # ------------------------
+#       - name: Assume EKS Admin Role
+#         id: assume
+#         shell: bash
+#         run: |
+#           sudo apt-get update -y && sudo apt-get install -y jq
+#           CREDS_JSON=$(aws sts assume-role \
+#             --role-arn "$ADMIN_ROLE_ARN" \
+#             --role-session-name gha-eks-admin \
+#             --duration-seconds 3600)
+#           echo "AWS_ACCESS_KEY_ID=$(echo "$CREDS_JSON" | jq -r .Credentials.AccessKeyId)"       >> $GITHUB_ENV
+#           echo "AWS_SECRET_ACCESS_KEY=$(echo "$CREDS_JSON" | jq -r .Credentials.SecretAccessKey)" >> $GITHUB_ENV
+#           echo "AWS_SESSION_TOKEN=$(echo "$CREDS_JSON" | jq -r .Credentials.SessionToken)"         >> $GITHUB_ENV
+#           echo "AWS_REGION=$EKS_REGION" >> $GITHUB_ENV
 
-      - name: Install kubectl
-        run: |
-          curl -LO "https://dl.k8s.io/release/$(curl -Ls https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-          chmod +x kubectl
-          sudo mv kubectl /usr/local/bin/kubectl
+#       - name: Install kubectl
+#         run: |
+#           curl -LO "https://dl.k8s.io/release/$(curl -Ls https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+#           chmod +x kubectl
+#           sudo mv kubectl /usr/local/bin/kubectl
 
-      # Recommended waits to avoid race conditions just after apply
-      - name: Wait for EKS cluster Active
-        run: |
-          aws eks wait cluster-active --name "$CLUSTER_NAME" --region "$EKS_REGION"
-          echo "Cluster is ACTIVE"
+#       # Recommended waits to avoid race conditions just after apply
+#       - name: Wait for EKS cluster Active
+#         run: |
+#           aws eks wait cluster-active --name "$CLUSTER_NAME" --region "$EKS_REGION"
+#           echo "Cluster is ACTIVE"
 
-      # If you know your node group name, you can also wait on it (optional):
-      # - name: Wait for Nodegroup Active
-      #   run: |
-      #     aws eks wait nodegroup-active --cluster-name "$CLUSTER_NAME" --nodegroup-name <NODEGROUP_NAME> --region "$EKS_REGION"
+#       # If you know your node group name, you can also wait on it (optional):
+#       # - name: Wait for Nodegroup Active
+#       #   run: |
+#       #     aws eks wait nodegroup-active --cluster-name "$CLUSTER_NAME" --nodegroup-name <NODEGROUP_NAME> --region "$EKS_REGION"
 
-      - name: Configure kubectl (with admin role)
-        run: |
-          aws eks update-kubeconfig \
-            --name "$CLUSTER_NAME" \
-            --region "$EKS_REGION" \
-            --role-arn "$ADMIN_ROLE_ARN" \
-            --alias "${CLUSTER_NAME}-admin"
-          kubectl config use-context "${CLUSTER_NAME}-admin"
+#       - name: Configure kubectl (with admin role)
+#         run: |
+#           aws eks update-kubeconfig \
+#             --name "$CLUSTER_NAME" \
+#             --region "$EKS_REGION" \
+#             --role-arn "$ADMIN_ROLE_ARN" \
+#             --alias "${CLUSTER_NAME}-admin"
+#           kubectl config use-context "${CLUSTER_NAME}-admin"
 
-      - name: Verify EKS
-        run: |
-          kubectl get nodes -o wide
-          kubectl get pods -A --ignore-not-found
+#       - name: Verify EKS
+#         run: |
+#           kubectl get nodes -o wide
+#           kubectl get pods -A --ignore-not-found
 
-      - name: Install StorageClass
-        run: kubectl apply -f storageclass.yaml
+#       - name: Install StorageClass
+#         run: kubectl apply -f storageclass.yaml
 
-      - name: Create kubernetes secrets
-        run: |
-          echo ${{ secrets.CF_TEST_SECRET }} | base64 --decode > px-all-secrets.yaml
-          kubectl apply -f px-all-secrets.yaml
+#       - name: Create kubernetes secrets
+#         run: |
+#           echo ${{ secrets.CF_TEST_SECRET }} | base64 --decode > px-all-secrets.yaml
+#           kubectl apply -f px-all-secrets.yaml
 
-      - name: Create gcr secrets
-        run: |
-          echo ${{ secrets.HC_GCR_DOCKER_SECRET }} | base64 --decode > hc-gcr-secrets.yaml
-          kubectl apply -f hc-gcr-secrets.yaml   # <- fixed .yaml typo
+#       - name: Create gcr secrets
+#         run: |
+#           echo ${{ secrets.HC_GCR_DOCKER_SECRET }} | base64 --decode > hc-gcr-secrets.yaml
+#           kubectl apply -f hc-gcr-secrets.yaml   # <- fixed .yaml typo
