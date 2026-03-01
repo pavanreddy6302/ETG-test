@@ -163,3 +163,13 @@ variable "trusted_admin_principals" {
   type        = list(string)
   default     = [  ]
 }
+
+variable "private_subnet_ids" {
+  type = list(string)
+  
+}
+
+variable "public_subnet_ids" {
+  type = list(string)
+  
+}

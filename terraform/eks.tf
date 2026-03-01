@@ -12,7 +12,7 @@ resource "aws_eks_cluster" "eks_cluster" {
 
   vpc_config {
     #subnet_ids = concat(aws_subnet.eks_private[*].id, aws_subnet.eks_public[*].id)
-    subnet_ids = concat(var.private_subnet_cidrs, var.public_subnet_cidrs)
+    subnet_ids = concat(var.private_subnet_ids, var.public_subnet_ids)
   }
 
   version = var.cluster_version
@@ -28,7 +28,7 @@ resource "aws_eks_node_group" "node_group" {
   node_group_name = "${var.cluster_name}-node-group"
   node_role_arn   = aws_iam_role.eks_node_role.arn
   #subnet_ids      = aws_subnet.eks_private[*].id
-  subnet_ids = var.private_subnet_cidrs
+  subnet_ids = var.private_subnet_ids
   version         = var.cluster_version
 
   scaling_config {
