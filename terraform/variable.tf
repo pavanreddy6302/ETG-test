@@ -155,3 +155,11 @@ variable "asset_bucket" {
   type        = string
   default     = "claimaforge-test-bucket-54321"
 }
+
+
+# Principals (usually SSO roles) allowed to AssumeRole into the EKS Admin Role
+variable "trusted_admin_principals" {
+  description = "IAM Role ARNs allowed to assume the EKS admin role"
+  type        = list(string)
+  default     = [  ]
+}
