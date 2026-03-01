@@ -302,16 +302,28 @@ resource "aws_eks_access_policy_association" "admin_policy_github_actions" {
 
 
 
+############################################
+# EKS Admin Role + Access (no external ARNs)
+############################################
+
+# 0) Discover current AWS account id
+data "aws_caller_identity" "current" {}
+
+# 1) Trust policy: allow principals from *this* account to assume the role
+#    (i.e., arn:aws:iam::<account-id>:root). You can tighten this later.
 data "aws_iam_policy_document" "eks_admin_role_trust" {
   statement {
+    sid     = "AccountRootCanAssume"
     actions = ["sts:AssumeRole"]
 
     principals {
       type        = "AWS"
-      identifiers = var.trusted_admin_principals
+      identifiers = [
+        "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
+      ]
     }
 
-    # Optional but recommended for human access
+    # Optional (uncomment to require MFA for human access):
     # condition {
     #   test     = "Bool"
     #   variable = "aws:MultiFactorAuthPresent"
@@ -320,28 +332,22 @@ data "aws_iam_policy_document" "eks_admin_role_trust" {
   }
 }
 
-##############################
-# EKS Admin Role (assumable by your SSO/admin roles)
-##############################
+# 2) EKS Admin Role (to be assumed by callers in this account)
 resource "aws_iam_role" "eks_admin_role" {
   name               = "${var.cluster_name}-eks-admin-role"
   assume_role_policy = data.aws_iam_policy_document.eks_admin_role_trust.json
+  # tags             = try(var.common_tags, null)
 }
 
-##############################
-# EKS Access Entry for Admin Role
-##############################
+# 3) Register the role with the EKS cluster (Access Entry)
 resource "aws_eks_access_entry" "eks_admin_role_access" {
   cluster_name  = aws_eks_cluster.eks_cluster.name
   principal_arn = aws_iam_role.eks_admin_role.arn
   type          = "STANDARD"
-
   # No kubernetes_groups needed when using EKS Access Policies
 }
 
-##############################
-# Grant Cluster-Admin via AWS-Managed Access Policy
-##############################
+# 4) Grant cluster-admin via AWS-managed policy (Access Policy Association)
 resource "aws_eks_access_policy_association" "admin_policy_eks_admin_role" {
   cluster_name  = aws_eks_cluster.eks_cluster.name
   principal_arn = aws_iam_role.eks_admin_role.arn
@@ -351,4 +357,3 @@ resource "aws_eks_access_policy_association" "admin_policy_eks_admin_role" {
 
   depends_on = [aws_eks_access_entry.eks_admin_role_access]
 }
-
