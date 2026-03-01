@@ -302,6 +302,24 @@ resource "aws_eks_access_policy_association" "admin_policy_github_actions" {
 
 
 
+data "aws_iam_policy_document" "eks_admin_role_trust" {
+  statement {
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "AWS"
+      identifiers = var.trusted_admin_principals
+    }
+
+    # Optional but recommended for human access
+    # condition {
+    #   test     = "Bool"
+    #   variable = "aws:MultiFactorAuthPresent"
+    #   values   = ["true"]
+    # }
+  }
+}
+
 ##############################
 # EKS Admin Role (assumable by your SSO/admin roles)
 ##############################
