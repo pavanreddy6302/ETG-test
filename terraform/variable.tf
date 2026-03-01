@@ -2,7 +2,7 @@
 variable "aws_region" {
   description = "AWS region"
   type        = string
-  default     = "ap-south-1"
+  default     = "us-east-1"
 }
 
 variable "vpc_cidr" {
@@ -14,25 +14,25 @@ variable "vpc_cidr" {
 variable "vpc_name" {
   description = "Name for the VPC"
   type        = string
-  default     = "cf-vpc"
+  default     = "training-vpc-vpc"
 }
 
 variable "public_subnet_cidrs" {
   description = "List of CIDRs for public subnets"
   type        = list(string)
-  default     = ["10.0.1.0/24", "10.0.2.0/24"]
+  default     = ["10.0.0.0/20", "10.0.16.0/20"]
 }
 
 variable "private_subnet_cidrs" {
   description = "List of CIDRs for private subnets"
   type        = list(string)
-  default     = ["10.0.101.0/24", "10.0.102.0/24"]
+  default     = ["10.0.128.0/20", "10.0.144.0/20"]
 }
 
 variable "availability_zones" {
   description = "List of availability zones"
   type        = list(string)
-  default     = ["ap-south-1a", "ap-south-1b"]
+  default     = ["us-east-1a", "us-east-1b"]
 }
 
 # Modified - Updated cluster version to supported version for add-ons

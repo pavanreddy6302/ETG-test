@@ -1,12 +1,12 @@
 aws_region =  "us-east-1"
 vpc_cidr   =  "10.0.0.0/16"
-vpc_name   =  "demo-vpc"
-public_subnet_cidrs =  ["10.0.1.0/24", "10.0.2.0/24"]
-private_subnet_cidrs =  ["10.0.101.0/24", "10.0.102.0/24"]
+vpc_name   =  "training-vpc-vpc"
+public_subnet_cidrs =  ["10.0.0.0/20", "10.0.16.0/20"]
+private_subnet_cidrs =  ["10.0.128.0/20", "10.0.144.0/2"]
 availability_zones  =  ["us-east-1a", "us-east-1b"]
 cluster_name  =  "demo-cluster"
 cluster_version  = "1.31"
-node_instance_types  = ["t3a.xlarge"]
+node_instance_types  = ["t3a.small"]
 node_desired_size  = 5
 node_min_size  = 1
 node_max_size  = 5
