@@ -34,42 +34,42 @@ jobs:
           terraform validate
           terraform plan
 
-      - name : terraform Destroy
-        run : terraform destroy -auto-approve 
+      # - name : terraform Destroy
+      #   run : terraform destroy -auto-approve 
 
       # Terraform Apply (without tfplan file)
-      # - name: Terraform Apply
-      #   run: terraform apply -auto-approve
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
 
-      # # Install kubectl for EKS verification
-      # - name: Install kubectl
-      #   run: |
-      #     curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-      #     chmod +x kubectl
-      #     sudo mv kubectl /usr/local/bin/
+      # Install kubectl for EKS verification
+      - name: Install kubectl
+        run: |
+          curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+          chmod +x kubectl
+          sudo mv kubectl /usr/local/bin/
 
-      # # Configure kubectl to access the EKS cluster
-      # - name: Configure kubectl
-      #   run: aws eks update-kubeconfig --name demo-cluster --region ap-south-1
+      # Configure kubectl to access the EKS cluster
+      - name: Configure kubectl
+        run: aws eks update-kubeconfig --name demo-cluster --region ap-south-1
 
-      # # Verify EKS cluster by getting nodes and pods
-      # - name: Verify EKS
-      #   run: |
-      #     kubectl get nodes
-      #     kubectl get pods -A
+      # Verify EKS cluster by getting nodes and pods
+      - name: Verify EKS
+        run: |
+          kubectl get nodes
+          kubectl get pods -A
 
-      # - name: Install StorageClass
-      #   run: kubectl apply -f storageclass.yaml
+      - name: Install StorageClass
+        run: kubectl apply -f storageclass.yaml
 
-      # - name: Create kubernetes secrets
-      #   run: |-
-      #     echo ${{ secrets.CF_TEST_SECRET }} | base64 --decode > px-all-secrets.yaml
-      #     kubectl apply -f px-all-secrets.yaml 
+      - name: Create kubernetes secrets
+        run: |-
+          echo ${{ secrets.CF_TEST_SECRET }} | base64 --decode > px-all-secrets.yaml
+          kubectl apply -f px-all-secrets.yaml 
 
-      # - name: Create gcr secrets
-      #   run: |-
-      #     echo ${{ secrets.HC_GCR_DOCKER_SECRET }} | base64 --decode > hc-gcr-secrets.yaml
-      #     kubectl apply -f hc-gcr-secrets.yaml
+      - name: Create gcr secrets
+        run: |-
+          echo ${{ secrets.HC_GCR_DOCKER_SECRET }} | base64 --decode > hc-gcr-secrets.yaml
+          kubectl apply -f hc-gcr-secrets.yaml
 
   # Auth-cluster:
   #   runs-on: ubuntu-latest
