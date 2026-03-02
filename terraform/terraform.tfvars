@@ -1,8 +1,8 @@
 aws_region =  "us-east-1"
 vpc_cidr   =  "10.0.0.0/16"
 vpc_name   =  "cluster-vpc" #"training-vpc-vpc"
-public_subnet_cidrs =  ["10.0.0.0/20", "10.0.16.0/20"]
-private_subnet_cidrs =  ["10.0.128.0/20", "10.0.144.0/20"]
+public_subnet_cidrs =  ["10.0.1.0/24", "10.0.2.0/24"]
+private_subnet_cidrs =  ["10.0.101.0/24", "10.0.102.0/24"]
 availability_zones  =  ["us-east-1a", "us-east-1b"]
 # private_subnet_ids = ["subnet-0de7573cfe87910b5", "subnet-0dac096ac31241db9"]
 # public_subnet_ids  = ["subnet-0e07c0f8ac679797f", "subnet-060a457a69cdcf313"]
