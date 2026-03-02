@@ -78,12 +78,12 @@ resource "aws_eks_node_group" "node_group" {
 resource "aws_launch_template" "eks_node_lt" {
   name_prefix = "${var.cluster_name}-node-lt-"
 
-  # (Optional) Give instances a friendly Name tag in EC2 console
+  # Give instances a friendly Name tag in EC2 console
   tag_specifications {
     resource_type = "instance"
     tags = {
       #Name            = "${var.cluster_name}-node"
-      cost-center-id  = "CC010"    # ✅ instance tag
+      cost-center-id  = "CC010"    
     }
   }
 
@@ -91,7 +91,7 @@ resource "aws_launch_template" "eks_node_lt" {
   tag_specifications {
     resource_type = "volume"
     tags = {
-      cost-center-id  = "CC010"    # ✅ volume tag
+      cost-center-id  = "CC010"    
     }
   }
 
@@ -99,7 +99,7 @@ resource "aws_launch_template" "eks_node_lt" {
   tag_specifications {
     resource_type = "network-interface"
     tags = {
-      cost-center-id  = "CC010"    # ✅ ENI tag
+      cost-center-id  = "CC010"    
     }
   }
 }
