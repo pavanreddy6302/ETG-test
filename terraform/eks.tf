@@ -17,6 +17,12 @@ resource "aws_eks_cluster" "eks_cluster" {
 
   version = var.cluster_version
 
+
+  
+  tags = {
+    cost-center-id = "CC010"
+  }
+
   depends_on = [
     #aws_iam_role_policy_attachment.eks_cluster_AmazonEKSClusterPolicy,
     aws_iam_role_policy_attachment.eks_cluster_AmazonEKSServicePolicy
