@@ -56,7 +56,7 @@ resource "aws_eks_node_group" "node_group" {
       ec2_ssh_key = var.ssh_key_name
     }
   }
-  
+
   tags = {
   cost-center-id = "CC010"
   }
@@ -67,3 +67,34 @@ resource "aws_eks_node_group" "node_group" {
   ]
 }
 
+# ------------------------------------------------------------
+# Launch Template for EKS nodes — ensures tags on instances, volumes, and ENIs
+# ------------------------------------------------------------
+resource "aws_launch_template" "eks_node_lt" {
+  name_prefix = "${var.cluster_name}-node-lt-"
+
+  # (Optional) Give instances a friendly Name tag in EC2 console
+  tag_specifications {
+    resource_type = "instance"
+    tags = {
+      Name            = "${var.cluster_name}-node"
+      cost-center-id  = "CC010"    # ✅ instance tag
+    }
+  }
+
+  # Tag all EBS volumes created for the nodes
+  tag_specifications {
+    resource_type = "volume"
+    tags = {
+      cost-center-id  = "CC010"    # ✅ volume tag
+    }
+  }
+
+  # Tag all ENIs attached to the nodes
+  tag_specifications {
+    resource_type = "network-interface"
+    tags = {
+      cost-center-id  = "CC010"    # ✅ ENI tag
+    }
+  }
+}
