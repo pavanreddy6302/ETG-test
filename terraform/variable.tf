@@ -120,11 +120,11 @@ variable "postgres_username" {
   type        = string
   default     = "dspace"
 }
-variable "github_org" {
-  description = "GitHub organization name"
-  type        = string
-  default     = "hcl-x"
-}
+# variable "github_org" {
+#   description = "GitHub organization name"
+#   type        = string
+#   default     = "hcl-x"
+# }
 
 variable "key_name" {
   description = "The name of the SSH key pair"
