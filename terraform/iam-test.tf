@@ -60,75 +60,6 @@ resource "aws_iam_role_policy_attachment" "node_ecr_policy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
 }
  
-# #############################################
-# # 3️⃣ GitHub OIDC Provider
-# #############################################
- 
-# resource "aws_iam_openid_connect_provider" "github" {
-#   url = "https://token.actions.githubusercontent.com"
- 
-#   client_id_list = [
-#     "sts.amazonaws.com"
-#   ]
- 
-#   thumbprint_list = [
-#     "6938fd4d98bab03faadb97b34396831e3780aea1"
-#   ]
-# }
- 
-# #############################################
-# # 4️⃣ GitHub Actions IAM Role (OIDC)
-# #############################################
- 
-# resource "aws_iam_role" "github_actions_role" {
-#   name = "${var.cluster_name}-github-actions-role"
- 
-#   assume_role_policy = jsonencode({
-#     Version = "2012-10-17",
-#     Statement = [{
-#       Effect = "Allow",
-#       Principal = {
-#         Federated = aws_iam_openid_connect_provider.github.arn
-#       },
-#       Action = "sts:AssumeRoleWithWebIdentity",
-#       Condition = {
-#         StringEquals = {
-#           "token.actions.githubusercontent.com:aud": "sts.amazonaws.com"
-#         },
-#         StringLike = {
-#           "token.actions.githubusercontent.com:sub": "repo:${var.github_org}/${var.github_repo}:*"
-#         }
-#       }
-#     }]
-#   })
-# }
- 
-# # Give Terraform full access (adjust later for production)
-# resource "aws_iam_role_policy_attachment" "github_admin_policy" {
-#   role       = aws_iam_role.github_actions_role.name
-#   policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
-# }
- 
-# #############################################
-# # 5️⃣ EKS Access Entry (Admin Access)
-# #############################################
- 
-# resource "aws_eks_access_entry" "eks_admin_role_access" {
-#   cluster_name  = var.cluster_name
-#   principal_arn = aws_iam_role.github_actions_role.arn
-#   type          = "STANDARD"
-# }
- 
-# resource "aws_eks_access_policy_association" "admin_policy_eks_admin_role" {
-#   cluster_name  = var.cluster_name
-#   principal_arn = aws_iam_role.github_actions_role.arn
-#   policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
- 
-#   access_scope {
-#     type = "cluster"
-#   }
-# }
- 
 
 ############################################
 # 1️⃣ GitHub OIDC Provider (Create Once)
@@ -166,7 +97,7 @@ resource "aws_iam_role" "github_actions_role" {
           "token.actions.githubusercontent.com:aud" = "sts.amazonaws.com"
         }
         StringLike = {
-          "token.actions.githubusercontent.com:sub" = "repo:pavanreddy6302/ETG-test:*"
+          "token.actions.githubusercontent.com:sub" = "repo::*"
         }
       }
     }]
