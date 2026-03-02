@@ -5,7 +5,9 @@ on:
   # push:
   #   branches:
   #     - test-eks-px-aps1
-
+permissions:
+  id-token: write
+  contents: read
 jobs:
   terraform_deployment:
     runs-on: ubuntu-latest
@@ -21,7 +23,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::222634374835:role/github-actions-eks-role
-          aws-region: ap-south-1
+          aws-region: us-east-1
 
       # AWS credentials
       - uses: aws-actions/configure-aws-credentials@v2
