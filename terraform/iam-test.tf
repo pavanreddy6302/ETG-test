@@ -133,3 +133,15 @@ resource "aws_eks_access_policy_association" "github_admin_policy" {
   }
 }
  
+
+resource "aws_eks_access_policy_association" "github_admin_policy" {
+  cluster_name  = var.cluster_name
+  principal_arn = aws_iam_role.github_actions_role.arn
+  policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSAdminPolicy"
+
+  access_scope {
+    type = "cluster"
+  }
+
+  depends_on = [aws_eks_access_entry.github_admin]
+}
