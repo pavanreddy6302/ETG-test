@@ -174,10 +174,10 @@ variable "trusted_admin_principals" {
   
 # }
 
-# variable "github_org" {
-#   type = string
-# }
+variable "github_org" {
+  type = string
+}
 
-# variable "github_repo" {
-#   type = string
-# }
+variable "github_repo" {
+  type = string
+}
