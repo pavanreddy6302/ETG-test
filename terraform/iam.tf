@@ -58,31 +58,31 @@
 #   role       = aws_iam_role.eks_node_role.name
 # }
 
-# ##############################
-# # IAM Users for Cluster Access
-# ##############################
+##############################
+# IAM Users for Cluster Access
+##############################
 
-# # Cluster admin user
-# # resource "aws_iam_user" "cluster_admin" {
-# #   name = "${var.cluster_name}-admin"
-# # }
+#Cluster admin user
+resource "aws_iam_user" "cluster_admin" {
+  name = "${var.cluster_name}-admin"
+}
 
-# # resource "aws_iam_access_key" "cluster_admin" {
-# #   user = aws_iam_user.cluster_admin.name
-# # }
+resource "aws_iam_access_key" "cluster_admin" {
+  user = aws_iam_user.cluster_admin.name
+}
 
-# # # Store credentials
-# # resource "aws_secretsmanager_secret" "user_credentials" {
-# #   name = "${var.cluster_name}-admin-credentials"
-# # }
+# Store credentials
+resource "aws_secretsmanager_secret" "user_credentials" {
+  name = "${var.cluster_name}-admin-credentials"
+}
 
-# # resource "aws_secretsmanager_secret_version" "user_credentials" {
-# #   secret_id = aws_secretsmanager_secret.user_credentials.id
-# #   secret_string = jsonencode({
-# #     access_key = aws_iam_access_key.cluster_admin.id
-# #     secret_key = aws_iam_access_key.cluster_admin.secret
-# #   })
-# # }
+resource "aws_secretsmanager_secret_version" "user_credentials" {
+  secret_id = aws_secretsmanager_secret.user_credentials.id
+  secret_string = jsonencode({
+    access_key = aws_iam_access_key.cluster_admin.id
+    secret_key = aws_iam_access_key.cluster_admin.secret
+  })
+}
 
 # # Reference for Rajat Kantjha
 # #data "aws_iam_user" "rajat_kantjha" {
@@ -236,18 +236,18 @@
 # # EKS Access Policy for Admin Access
 # ##############################
 
-# # This grants cluster-admin permissions to all users and roles
-# # resource "aws_eks_access_policy_association" "admin_policy_cluster_admin" {
-# #   cluster_name  = aws_eks_cluster.eks_cluster.name
-# #   principal_arn = aws_iam_user.cluster_admin.arn
-# #   policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+# This grants cluster-admin permissions to all users and roles
+# resource "aws_eks_access_policy_association" "admin_policy_cluster_admin" {
+#   cluster_name  = aws_eks_cluster.eks_cluster.name
+#   principal_arn = aws_iam_user.cluster_admin.arn
+#   policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
   
-# #   access_scope {
-# #     type = "cluster"
-# #   }
+#   access_scope {
+#     type = "cluster"
+#   }
   
-# #   depends_on = [aws_eks_access_entry.cluster_admin_access]
-# # }
+#   depends_on = [aws_eks_access_entry.cluster_admin_access]
+# }
 
 # # EKS Access Policy for Rajat Kantjha
 # #resource "aws_eks_access_policy_association" "admin_policy_rajat" {
