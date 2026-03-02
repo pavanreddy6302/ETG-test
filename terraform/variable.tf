@@ -173,3 +173,11 @@ variable "trusted_admin_principals" {
 #   type = list(string)
   
 # }
+
+variable "github_org" {
+  type = string
+}
+
+variable "github_repo" {
+  type = string
+}
