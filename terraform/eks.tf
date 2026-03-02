@@ -52,7 +52,7 @@ resource "aws_eks_node_group" "node_group" {
   }
 
   depends_on = [
-    aws_iam_role_policy_attachment.eks_node_AmazonEKSWorkerNodePolicy,
+    #aws_iam_role_policy_attachment.eks_node_AmazonEKSWorkerNodePolicy,
     aws_iam_role_policy_attachment.eks_node_AmazonEC2ContainerRegistryReadOnly,
     aws_iam_role_policy_attachment.eks_node_AmazonEKS_CNI_Policy,
   ]
