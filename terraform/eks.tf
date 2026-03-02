@@ -56,7 +56,10 @@ resource "aws_eks_node_group" "node_group" {
       ec2_ssh_key = var.ssh_key_name
     }
   }
-
+  
+  tags = {
+  cost-center-id = "CC010"
+  }
   depends_on = [
     #aws_iam_role_policy_attachment.eks_node_AmazonEKSWorkerNodePolicy,
     # aws_iam_role_policy_attachment.eks_node_AmazonEC2ContainerRegistryReadOnly,
