@@ -113,13 +113,13 @@ resource "aws_iam_role_policy_attachment" "github_admin_policy" {
 # 5️⃣ EKS Access Entry (Admin Access)
 #############################################
  
-resource "aws_eks_access_entry" "cluster_admin" {
+resource "aws_eks_access_entry" "eks_admin_role_access" {
   cluster_name  = var.cluster_name
   principal_arn = aws_iam_role.github_actions_role.arn
   type          = "STANDARD"
 }
  
-resource "aws_eks_access_policy_association" "cluster_admin_policy" {
+resource "aws_eks_access_policy_association" "admin_policy_eks_admin_role" {
   cluster_name  = var.cluster_name
   principal_arn = aws_iam_role.github_actions_role.arn
   policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
