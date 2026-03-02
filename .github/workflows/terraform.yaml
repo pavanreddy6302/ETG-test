@@ -70,15 +70,15 @@ jobs:
           kubectl apply --dry-run=client -f storageclass.yaml -o yaml
           kubectl apply -f storageclass.yaml
 
-      - name: Create kubernetes secrets
-        run: |-
-          echo ${{ secrets.CF_TEST_SECRET }} | base64 --decode > px-all-secrets.yaml
-          kubectl apply -f px-all-secrets.yaml 
+      # - name: Create kubernetes secrets
+      #   run: |-
+      #     echo ${{ secrets.CF_TEST_SECRET }} | base64 --decode > px-all-secrets.yaml
+      #     kubectl apply -f px-all-secrets.yaml 
 
-      - name: Create gcr secrets
-        run: |-
-          echo ${{ secrets.HC_GCR_DOCKER_SECRET }} | base64 --decode > hc-gcr-secrets.yaml
-          kubectl apply -f hc-gcr-secrets.yaml
+      # - name: Create gcr secrets
+      #   run: |-
+      #     echo ${{ secrets.HC_GCR_DOCKER_SECRET }} | base64 --decode > hc-gcr-secrets.yaml
+      #     kubectl apply -f hc-gcr-secrets.yaml
 
   # Auth-cluster:
   #   runs-on: ubuntu-latest
