@@ -48,6 +48,9 @@ jobs:
       - name: Terraform Apply
         run: terraform apply -auto-approve
 
+      - name: Check aws identity
+        run: aws sts get-caller-identity
+
       # Install kubectl for EKS verification
       - name: Install kubectl
         run: |
