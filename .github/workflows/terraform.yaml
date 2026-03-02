@@ -23,7 +23,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
           aws-region: us-east-1
-          
+
       # Set up Terraform
       - uses: hashicorp/setup-terraform@v3
       - name: Configure AWS credentials
@@ -31,14 +31,6 @@ jobs:
         with:
           role-to-assume: arn:aws:iam::222634374835:role/github-actions-eks-role
           aws-region: us-east-1
-
-      # # AWS credentials
-      # - uses: aws-actions/configure-aws-credentials@v2
-      #   with:
-      #     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      #     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      #     aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
-      #     aws-region: us-east-1
 
       # Terraform Init & Plan (without -out)
       - name: Terraform Init & Plan

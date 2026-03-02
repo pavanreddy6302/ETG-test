@@ -82,7 +82,7 @@ resource "aws_launch_template" "eks_node_lt" {
   tag_specifications {
     resource_type = "instance"
     tags = {
-      Name            = "${var.cluster_name}-node"
+      #Name            = "${var.cluster_name}-node"
       cost-center-id  = "CC010"    # ✅ instance tag
     }
   }
