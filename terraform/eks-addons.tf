@@ -12,61 +12,61 @@ resource "aws_iam_openid_connect_provider" "eks" {
   url             = aws_eks_cluster.eks_cluster.identity[0].oidc[0].issuer
 }
 
-##############################
-# GitHub OIDC provider
-##############################
-resource "aws_iam_openid_connect_provider" "github" {
-  url             = "https://token.actions.githubusercontent.com"
-  client_id_list  = ["sts.amazonaws.com"]
-  thumbprint_list = ["9e99a48a9960b14926bb7f3b02e22da2b0ab7280"]
-  lifecycle {
-    ignore_changes = [thumbprint_list]
-}
-}
-##############################
-# GitHub Actions role with trust relationship
-##############################
+# ##############################
+# # GitHub OIDC provider
+# ##############################
+# resource "aws_iam_openid_connect_provider" "github" {
+#   url             = "https://token.actions.githubusercontent.com"
+#   client_id_list  = ["sts.amazonaws.com"]
+#   thumbprint_list = ["9e99a48a9960b14926bb7f3b02e22da2b0ab7280"]
+#   lifecycle {
+#     ignore_changes = [thumbprint_list]
+# }
+# }
+# ##############################
+# # GitHub Actions role with trust relationship
+# ##############################
 
-resource "aws_iam_role" "github_actions" {
-  name = "${var.cluster_name}-github-actions"
+# resource "aws_iam_role" "github_actions" {
+#   name = "${var.cluster_name}-github-actions"
 
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17",
-    Statement = [
-      {
-        Effect = "Allow",
-        Principal = {
-          Service = "eks.amazonaws.com"
-        },
-        Action = "sts:AssumeRole"
-      },
-      {
-        Effect = "Allow",
-        Principal = {
-          AWS = aws_iam_user.cluster_admin.arn,
-          Federated = aws_iam_openid_connect_provider.github.arn
-        },
-        Action = [
-          "sts:AssumeRoleWithWebIdentity",
-          "sts:AssumeRole"
-        ],
-        Condition = {
-          StringEquals = {
-            "token.actions.githubusercontent.com:aud": "sts.amazonaws.com"
-          },
-          StringLike = {
-            "token.actions.githubusercontent.com:sub": "repo:${var.github_org}/*"
-          }
-        }
-      }
-    ]
-  })
-}
+#   assume_role_policy = jsonencode({
+#     Version = "2012-10-17",
+#     Statement = [
+#       {
+#         Effect = "Allow",
+#         Principal = {
+#           Service = "eks.amazonaws.com"
+#         },
+#         Action = "sts:AssumeRole"
+#       },
+#       {
+#         Effect = "Allow",
+#         Principal = {
+#           AWS = aws_iam_user.cluster_admin.arn,
+#           Federated = aws_iam_openid_connect_provider.github.arn
+#         },
+#         Action = [
+#           "sts:AssumeRoleWithWebIdentity",
+#           "sts:AssumeRole"
+#         ],
+#         Condition = {
+#           StringEquals = {
+#             "token.actions.githubusercontent.com:aud": "sts.amazonaws.com"
+#           },
+#           StringLike = {
+#             "token.actions.githubusercontent.com:sub": "repo:${var.github_org}/*"
+#           }
+#         }
+#       }
+#     ]
+#   })
+# }
 
-resource "aws_iam_role_policy_attachment" "github_eks_admin" {
-  role       = aws_iam_role.github_actions.name
-  policy_arn = aws_iam_policy.eks_admin.arn
-}
+# resource "aws_iam_role_policy_attachment" "github_eks_admin" {
+#   role       = aws_iam_role.github_actions.name
+#   policy_arn = aws_iam_policy.eks_admin.arn
+# }
 
 ##############################
 # IAM Roles for Add-ons
