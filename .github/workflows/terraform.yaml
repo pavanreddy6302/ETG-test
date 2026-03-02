@@ -67,8 +67,8 @@ jobs:
 
       - name: Install StorageClass
         run:
-             kubectl apply --dry-run=client -f storageclass.yaml -o yam
-             kubectl apply -f storageclass.yaml
+          kubectl apply --dry-run=client -f storageclass.yaml -o yaml
+          kubectl apply -f storageclass.yaml
 
       - name: Create kubernetes secrets
         run: |-
