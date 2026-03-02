@@ -246,7 +246,7 @@ resource "aws_eks_access_policy_association" "admin_policy_cluster_admin" {
     type = "cluster"
   }
   
-  depends_on = [aws_eks_access_entry.cluster_admin_access]
+  #depends_on = [aws_eks_access_entry.cluster_admin_access]
 }
 
 # # EKS Access Policy for Rajat Kantjha
