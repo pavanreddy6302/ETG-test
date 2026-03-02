@@ -50,6 +50,11 @@ resource "aws_eks_node_group" "node_group" {
 
   instance_types = var.node_instance_types
 
+  launch_template {
+    id      = aws_launch_template.eks_node_lt.id
+    version = "$Latest"
+  }
+
   dynamic "remote_access" {
     for_each = var.ssh_key_name != "" ? [1] : []
     content {
