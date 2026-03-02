@@ -1,94 +1,94 @@
-# name: terraform-aws-deployment
+name: terraform-aws-deployment
 
-# on:
-#   workflow_dispatch:
-#   # push:
-#   #   branches:
-#   #     - test-eks-px-aps1
-# permissions:
-#   id-token: write
-#   contents: read
-# jobs:
-#   terraform_deployment:
-#     runs-on: ubuntu-latest
-#     defaults:
-#       run:
-#         working-directory: ./terraform
-#     steps:
-#       - uses: actions/checkout@v4
-#   # AWS credentials
-#       - uses: aws-actions/configure-aws-credentials@v2
-#         with:
-#           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-#           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
-#           aws-region: us-east-1
+on:
+  workflow_dispatch:
+  # push:
+  #   branches:
+  #     - test-eks-px-aps1
+permissions:
+  id-token: write
+  contents: read
+jobs:
+  terraform_deployment:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./terraform
+    steps:
+      - uses: actions/checkout@v4
+  # AWS credentials
+      - uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: us-east-1
 
-#       # Set up Terraform
-#       - uses: hashicorp/setup-terraform@v3
-#       - name: Configure AWS credentials
-#         uses: aws-actions/configure-aws-credentials@v4
-#         with:
-#           role-to-assume: arn:aws:iam::222634374835:role/github-actions-eks-role
-#           aws-region: us-east-1
+      # Set up Terraform
+      - uses: hashicorp/setup-terraform@v3
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::222634374835:role/github-actions-eks-role
+          aws-region: us-east-1
 
-#       # # AWS credentials
-#       # - uses: aws-actions/configure-aws-credentials@v2
-#       #   with:
-#       #     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#       #     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-#       #     aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
-#       #     aws-region: us-east-1
+      # # AWS credentials
+      # - uses: aws-actions/configure-aws-credentials@v2
+      #   with:
+      #     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      #     aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+      #     aws-region: us-east-1
 
-#       # Terraform Init & Plan (without -out)
-#       - name: Terraform Init & Plan
-#         run: |
-#           terraform init -reconfigure
-#           terraform refresh
-#           terraform validate
-#           terraform plan
+      # Terraform Init & Plan (without -out)
+      - name: Terraform Init & Plan
+        run: |
+          terraform init -reconfigure
+          terraform refresh
+          terraform validate
+          terraform plan
 
-#       # - name : terraform Destroy
-#       #   run : terraform destroy -auto-approve 
+      # - name : terraform Destroy
+      #   run : terraform destroy -auto-approve 
 
-#       # Terraform Apply (without tfplan file)
-#       - name: Terraform Apply
-#         run: terraform apply -auto-approve
+      # Terraform Apply (without tfplan file)
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
 
-#       - name: Check aws identity
-#         run: aws sts get-caller-identity
+      - name: Check aws identity
+        run: aws sts get-caller-identity
 
-#       # Install kubectl for EKS verification
-#       - name: Install kubectl
-#         run: |
-#           curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-#           chmod +x kubectl
-#           sudo mv kubectl /usr/local/bin/
+      # Install kubectl for EKS verification
+      - name: Install kubectl
+        run: |
+          curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+          chmod +x kubectl
+          sudo mv kubectl /usr/local/bin/
 
-#       # Configure kubectl to access the EKS cluster
-#       - name: Configure kubectl
-#         run: aws eks update-kubeconfig --name demo-cluster --region us-east-1
+      # Configure kubectl to access the EKS cluster
+      - name: Configure kubectl
+        run: aws eks update-kubeconfig --name demo-cluster --region us-east-1
 
-#       # Verify EKS cluster by getting nodes and pods
-#       - name: Verify EKS
-#         run: |
-#           kubectl get nodes
-#           kubectl get pods -A
+      # Verify EKS cluster by getting nodes and pods
+      - name: Verify EKS
+        run: |
+          kubectl get nodes
+          kubectl get pods -A
 
-#       - name: Install StorageClass
-#         run: |
-#           kubectl apply --dry-run=client -f storageclass.yaml -o yaml
-#           kubectl apply -f storageclass.yaml
+      - name: Install StorageClass
+        run: |
+          kubectl apply --dry-run=client -f storageclass.yaml -o yaml
+          kubectl apply -f storageclass.yaml
 
-#       - name: Create kubernetes secrets
-#         run: |-
-#           echo ${{ secrets.CF_TEST_SECRET }} | base64 --decode > px-all-secrets.yaml
-#           kubectl apply -f px-all-secrets.yaml 
+      - name: Create kubernetes secrets
+        run: |-
+          echo ${{ secrets.CF_TEST_SECRET }} | base64 --decode > px-all-secrets.yaml
+          kubectl apply -f px-all-secrets.yaml 
 
-#       - name: Create gcr secrets
-#         run: |-
-#           echo ${{ secrets.HC_GCR_DOCKER_SECRET }} | base64 --decode > hc-gcr-secrets.yaml
-#           kubectl apply -f hc-gcr-secrets.yaml
+      - name: Create gcr secrets
+        run: |-
+          echo ${{ secrets.HC_GCR_DOCKER_SECRET }} | base64 --decode > hc-gcr-secrets.yaml
+          kubectl apply -f hc-gcr-secrets.yaml
 
   # Auth-cluster:
   #   runs-on: ubuntu-latest
@@ -344,48 +344,3 @@
 
 
 
-name: terraform-aws-deployment
-
-on:
-  workflow_dispatch:
-  # push:
-  #   branches:
-  #     - test-eks-px-aps1
-
-jobs:
-  terraform_deployment:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./terraform
-    steps:
-      - uses: actions/checkout@v4
-
-      # Set up Terraform
-      - uses: hashicorp/setup-terraform@v3
-
-      # AWS credentials
-      - uses: aws-actions/configure-aws-credentials@v2
-        with:
-          role-to-assume: arn:aws:iam::222634374835:role/etg-role
-          aws-region: us-east-1
-          audience: sts.amazonaws.com
-
-      # Terraform Init & Plan (without -out)
-      - name: Terraform Init & Plan
-        run: |
-          terraform init -reconfigure
-          terraform refresh
-          terraform validate
-          terraform plan
-
-      # Terraform Apply (without tfplan file)
-      - name: Terraform Apply
-        run: terraform apply -auto-approve
-
-      # Install kubectl for EKS verification
-      - name: Install kubectl
-        run: |
-          curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-          chmod +x kubectl
-          sudo mv kubectl /usr/local/bin/
