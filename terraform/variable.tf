@@ -176,8 +176,10 @@ variable "trusted_admin_principals" {
 
 variable "github_org" {
   type = string
+  default = "pavanreddy6302"
 }
 
 variable "github_repo" {
   type = string
+  default = "ETG-test"
 }
