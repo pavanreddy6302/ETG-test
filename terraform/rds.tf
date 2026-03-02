@@ -37,6 +37,10 @@
 #   storage_encrypted = true
 #   kms_key_id        = aws_kms_key.rds_key.arn
 
+#   tags = {
+#     "cost-center-id" = "CC010"
+#   }
+
 #   # Enable automated daily backups
 #   backup_retention_period = 7  # Set the retention period for backups (in days)
 #   backup_window = "03:00-04:00"  # Specify the preferred backup window in UTC
@@ -60,7 +64,10 @@
 #   skip_final_snapshot = true
 #   storage_encrypted = true
 #   kms_key_id        = aws_kms_key.rds_key.arn
-
+  
+#   tags = {
+#     "cost-center-id" = "CC010"
+#     }
 #   # Enable automated daily backups
 #   backup_retention_period = 7  # Set the retention period for backups (in days)
 #   backup_window = "03:00-04:00"  # Specify the preferred backup window in UTC
