@@ -1,11 +1,11 @@
 aws_region =  "us-east-1"
 vpc_cidr   =  "10.0.0.0/16"
-vpc_name   =  "training-vpc-vpc"
+vpc_name   =  "cluster-vpc" #"training-vpc-vpc"
 public_subnet_cidrs =  ["10.0.0.0/20", "10.0.16.0/20"]
 private_subnet_cidrs =  ["10.0.128.0/20", "10.0.144.0/20"]
 availability_zones  =  ["us-east-1a", "us-east-1b"]
-private_subnet_ids = ["subnet-0de7573cfe87910b5", "subnet-0dac096ac31241db9"]
-public_subnet_ids  = ["subnet-0e07c0f8ac679797f", "subnet-060a457a69cdcf313"]
+# private_subnet_ids = ["subnet-0de7573cfe87910b5", "subnet-0dac096ac31241db9"]
+# public_subnet_ids  = ["subnet-0e07c0f8ac679797f", "subnet-060a457a69cdcf313"]
 cluster_name  =  "demo-cluster"
 cluster_version  = "1.31"
 node_instance_types  = ["t3a.large"]
