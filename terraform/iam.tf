@@ -68,27 +68,27 @@ resource "aws_iam_role_policy_attachment" "node_ssm_core" {
 # IAM Users for Cluster Access
 ##############################
 
-##Cluster admin user
-resource "aws_iam_user" "cluster_admin" {
-  name = "${var.cluster_name}-admin"
-}
+# ##Cluster admin user
+# resource "aws_iam_user" "cluster_admin" {
+#   name = "${var.cluster_name}-admin"
+# }
 
-resource "aws_iam_access_key" "cluster_admin" {
-  user = aws_iam_user.cluster_admin.name
-}
+# resource "aws_iam_access_key" "cluster_admin" {
+#   user = aws_iam_user.cluster_admin.name
+# }
 
-# Store credentials
-resource "aws_secretsmanager_secret" "user_credentials" {
-  name = "${var.cluster_name}-admin-credentials"
-}
+# # Store credentials
+# resource "aws_secretsmanager_secret" "user_credentials" {
+#   name = "${var.cluster_name}-admin-credentials"
+# }
 
-resource "aws_secretsmanager_secret_version" "user_credentials" {
-  secret_id = aws_secretsmanager_secret.user_credentials.id
-  secret_string = jsonencode({
-    access_key = aws_iam_access_key.cluster_admin.id
-    secret_key = aws_iam_access_key.cluster_admin.secret
-  })
-}
+# resource "aws_secretsmanager_secret_version" "user_credentials" {
+#   secret_id = aws_secretsmanager_secret.user_credentials.id
+#   secret_string = jsonencode({
+#     access_key = aws_iam_access_key.cluster_admin.id
+#     secret_key = aws_iam_access_key.cluster_admin.secret
+#   })
+# }
 
 # # Reference for Rajat Kantjha
 # #data "aws_iam_user" "rajat_kantjha" {
