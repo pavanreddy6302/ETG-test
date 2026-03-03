@@ -64,15 +64,15 @@ resource "aws_iam_role_policy_attachment" "node_ssm_core" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
-resource "aws_iam_role_policy_attachment" "eks_cluster_policy" {
-  role = aws_iam_role.eks_node_role.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSAdminPolicy"
-}
+# resource "aws_iam_role_policy_attachment" "eks_cluster_policy" {
+#   role = aws_iam_role.eks_node_role.name
+#   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSAdminPolicy"
+# }
 
-resource "aws_iam_role_policy_attachment" "eks_admin_cluster_policy" {
-  role = aws_iam_role.eks_node_role.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterAdminPolicy"
-}
+# resource "aws_iam_role_policy_attachment" "eks_admin_cluster_policy" {
+#   role = aws_iam_role.eks_node_role.name
+#   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterAdminPolicy"
+# }
 
 ##############################
 # IAM Users for Cluster Access
