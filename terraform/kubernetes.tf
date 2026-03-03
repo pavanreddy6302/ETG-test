@@ -43,10 +43,15 @@ resource "kubernetes_cluster_role_binding" "alb_controller" {
     name      = "cluster-admin"
   }
 
-  subject {
-    kind      = "ServiceAccount"
-    name      = "aws-load-balancer-controller"
-    namespace = "kube-system"
+#   subject {
+#     kind      = "ServiceAccount"
+#     name      = "aws-load-balancer-controller"
+#     namespace = "kube-system"
+#   }
+    subject {
+    kind      = "User"
+    name      = "shishir.ghildiyal@hcltech.com"
+    api_group = "rbac.authorization.k8s.io"
   }
 }
 
