@@ -103,12 +103,12 @@
 
 
 
-########################################
-# AWS provider (example)
-########################################
-provider "aws" {
-  region = var.aws_region
-}
+# ########################################
+# # AWS provider (example)
+# ########################################
+# provider "aws" {
+#   region = var.aws_region
+# }
 
 ########################################
 # EKS connection data (no resource refs)
