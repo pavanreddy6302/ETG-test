@@ -37,17 +37,17 @@ resource "aws_iam_role_policy_attachment" "alb_controller" {
 }
 
 # Helm Provider Configuration
-provider "helm" {
-  kubernetes {
-    host                   = aws_eks_cluster.eks_cluster.endpoint
-    cluster_ca_certificate = base64decode(aws_eks_cluster.eks_cluster.certificate_authority[0].data)
-    exec {
-      api_version = "client.authentication.k8s.io/v1beta1"
-      args        = ["eks", "get-token", "--cluster-name", aws_eks_cluster.eks_cluster.name, "--region", var.aws_region]
-      command     = "aws"
-    }
-  }
-}
+# provider "helm" {
+#   kubernetes {
+#     host                   = aws_eks_cluster.eks_cluster.endpoint
+#     cluster_ca_certificate = base64decode(aws_eks_cluster.eks_cluster.certificate_authority[0].data)
+#     exec {
+#       api_version = "client.authentication.k8s.io/v1beta1"
+#       args        = ["eks", "get-token", "--cluster-name", aws_eks_cluster.eks_cluster.name, "--region", var.aws_region]
+#       command     = "aws"
+#     }
+#   }
+# }
 
 # Install ALB Controller via Helm
 resource "helm_release" "aws_load_balancer_controller" {
