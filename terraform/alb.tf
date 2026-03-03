@@ -120,7 +120,7 @@ data "aws_eks_cluster" "by_name" {
   name = var.cluster_name
 }
 
-data "aws_eks_cluster_auth" "by_name" {
+data "aws_eks_cluster_auth" "by_name1" {
   name = var.cluster_name
 }
 
@@ -223,7 +223,7 @@ resource "helm_release" "aws_load_balancer_controller" {
   timeout = 600
 
   depends_on = [
-    aws_eks_cluster.by_name,
+    data.aws_eks_cluster.by_name,
     aws_iam_role.alb_controller,
     aws_iam_policy.alb_controller,
     aws_iam_role_policy_attachment.alb_controller
