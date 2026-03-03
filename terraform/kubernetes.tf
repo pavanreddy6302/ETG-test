@@ -73,64 +73,57 @@ data "aws_eks_cluster_auth" "cluster" {
   name = aws_eks_cluster.eks_cluster.name
 }
 
-########################################
-# Kubernetes Provider (no kubeconfig)  #
-########################################
-provider "kubernetes" {
-  host                   = data.aws_eks_cluster.cluster.endpoint
-  cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority[0].data)
-  token                  = data.aws_eks_cluster_auth.cluster.token
-}
+
 
 ############################################################
 # ClusterRoleBinding: grant cluster-admin to an IAM user   #
 ############################################################
-resource "kubernetes_cluster_role_binding" "admin_user" {
-  depends_on = [
-    aws_eks_access_policy_association.admin_policy_cluster_admin,
-    aws_eks_access_entry.cluster_admin_access,
-    aws_eks_cluster.eks_cluster
-  ]
+# resource "kubernetes_cluster_role_binding" "admin_user" {
+#   depends_on = [
+#     aws_eks_access_policy_association.admin_policy_cluster_admin,
+#     aws_eks_access_entry.cluster_admin_access,
+#     aws_eks_cluster.eks_cluster
+#   ]
 
-  metadata {
-    name = "${var.cluster_name}-admin-binding"
-  }
+#   metadata {
+#     name = "${var.cluster_name}-admin-binding"
+#   }
 
-  role_ref {
-    api_group = "rbac.authorization.k8s.io"
-    kind      = "ClusterRole"
-    name      = "cluster-admin"
-  }
+#   role_ref {
+#     api_group = "rbac.authorization.k8s.io"
+#     kind      = "ClusterRole"
+#     name      = "cluster-admin"
+#   }
 
-  subject {
-    kind      = "User"
-    name      = aws_iam_user.cluster_admin.name
-    api_group = "rbac.authorization.k8s.io"
-  }
-}
+#   subject {
+#     kind      = "User"
+#     name      = aws_iam_user.cluster_admin.name
+#     api_group = "rbac.authorization.k8s.io"
+#   }
+# }
 
 #########################################################################
 # ClusterRoleBinding: grant cluster-admin to the ALB controller SA      #
 # NOTE: Ensure the ServiceAccount "aws-load-balancer-controller" exists #
 #       in kube-system (e.g., created by the Helm chart).               #
 #########################################################################
-resource "kubernetes_cluster_role_binding" "alb_controller" {
-  metadata {
-    name = "alb-controller-binding"
-  }
+# resource "kubernetes_cluster_role_binding" "alb_controller" {
+#   metadata {
+#     name = "alb-controller-binding"
+#   }
 
-  role_ref {
-    api_group = "rbac.authorization.k8s.io"
-    kind      = "ClusterRole"
-    name      = "cluster-admin"
-  }
+#   role_ref {
+#     api_group = "rbac.authorization.k8s.io"
+#     kind      = "ClusterRole"
+#     name      = "cluster-admin"
+#   }
 
-  subject {
-    kind      = "ServiceAccount"
-    name      = "aws-load-balancer-controller"
-    namespace = "kube-system"
-  }
+#   subject {
+#     kind      = "ServiceAccount"
+#     name      = "aws-load-balancer-controller"
+#     namespace = "kube-system"
+#   }
 
-  # If you manage the controller via Terraform Helm release, uncomment:
-  # depends_on = [helm_release.aws_load_balancer_controller]
-}
+#   # If you manage the controller via Terraform Helm release, uncomment:
+#   # depends_on = [helm_release.aws_load_balancer_controller]
+# }
