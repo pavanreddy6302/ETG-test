@@ -1,3 +1,6 @@
+# data "aws_eks_cluster" "cluster" {
+#   name = var.cluster_name
+# }
 
 # # IAM Role for ALB Controller
 # resource "aws_iam_role" "alb_controller" {
@@ -84,7 +87,7 @@
 #   timeout = 600
 
 #   depends_on = [
-#     aws_eks_cluster.eks_cluster,
+#     aws_eks_cluster.cluster,
 #     aws_iam_role.alb_controller, # Ensure IAM role is created before Helm release
 #     aws_iam_policy.alb_controller, # Ensure the policy is attached before Helm release
 #     aws_iam_role_policy_attachment.alb_controller # Ensure policy attachment is applied
@@ -220,6 +223,7 @@ resource "helm_release" "aws_load_balancer_controller" {
   timeout = 600
 
   depends_on = [
+    aws_eks_cluster.by_name,
     aws_iam_role.alb_controller,
     aws_iam_policy.alb_controller,
     aws_iam_role_policy_attachment.alb_controller

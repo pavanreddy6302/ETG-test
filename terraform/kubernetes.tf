@@ -1,9 +1,10 @@
 # data "aws_eks_cluster" "cluster" {
-#   name = aws_eks_cluster.eks_cluster.name
+#   name = var.cluster_name
 # }
  
 # data "aws_eks_cluster_auth" "cluster" {
-#   name = aws_eks_cluster.eks_cluster.name
+#   name = var.cluster_name
+
 # }
 
 # provider "kubernetes" {
