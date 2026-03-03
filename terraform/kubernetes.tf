@@ -1,4 +1,4 @@
-data "aws_eks_cluster" "cluster" {
+data "aws_eks_cluster" "cluster1" {
   name = var.cluster_name
 }
 
@@ -17,7 +17,7 @@ resource "kubernetes_cluster_role_binding" "admin_user" {
   depends_on = [
     aws_eks_access_policy_association.admin_policy_cluster_admin,
     aws_eks_access_entry.cluster_admin_access,
-    data.aws_eks_cluster.cluster
+    data.aws_eks_cluster.cluster1
   ]
 
   metadata {
