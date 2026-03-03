@@ -258,3 +258,38 @@
     }
   ]
 }
+
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Principal": {
+                "Federated": "arn:aws:iam::222634374835:oidc-provider/token.actions.githubusercontent.com"
+            },
+            "Action": "sts:AssumeRoleWithWebIdentity",
+            "Condition": {
+                "StringEquals": {
+                    "token.actions.githubusercontent.com:aud": "sts.amazonaws.com"
+                },
+                "StringLike": {
+                    "token.actions.githubusercontent.com:sub": "repo:pavanreddy6302/ETG-test:*"
+                }
+            }
+        },
+        {
+            "Sid": "EksServiceAccountOIDC",
+            "Effect": "Allow",
+            "Principal": {
+                "Federated": "arn:aws:iam::222634374835:oidc-provider/oidc.eks.us-east-1.amazonaws.com/id/C3327A6988F1E735B38706D35C83C9E3"
+            },
+            "Action": "sts:AssumeRoleWithWebIdentity",
+            "Condition": {
+                "StringEquals": {
+                    "oidc.eks.us-east-1.amazonaws.com/id/C3327A6988F1E735B38706D35C83C9E3:aud": "sts.amazonaws.com",
+                    "oidc.eks.us-east-1.amazonaws.com/id/C3327A6988F1E735B38706D35C83C9E3:sub": "system:serviceaccount:kube-system:ebs-csi-controller-sa"
+                }
+            }
+        }
+    ]
+}
