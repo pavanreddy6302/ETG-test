@@ -190,7 +190,7 @@ resource "aws_secretsmanager_secret_version" "user_credentials" {
 
 #Access entry for the cluster admin user
 resource "aws_eks_access_entry" "cluster_admin_access" {
-  cluster_name  = aws_eks_cluster.eks_cluster.name
+  cluster_name  = var.cluster_name
   principal_arn = aws_iam_user.cluster_admin.arn
   type          = "STANDARD"
   
@@ -200,7 +200,7 @@ resource "aws_eks_access_entry" "cluster_admin_access" {
 
 # # Access entry for rajat.kantjha@hcltech.com
 # #resource "aws_eks_access_entry" "rajat_kantjha_access" {
-# #  cluster_name  = aws_eks_cluster.eks_cluster.name
+# #  cluster_name  = var.cluster_name
 # #  principal_arn = data.aws_iam_user.rajat_kantjha.arn
 # #  type          = "STANDARD"
 # #  
@@ -210,7 +210,7 @@ resource "aws_eks_access_entry" "cluster_admin_access" {
 
 # # Access entry for sohail.quazi@hcl.com
 # # resource "aws_eks_access_entry" "sohail_quazi_access" {
-# #   cluster_name  = aws_eks_cluster.eks_cluster.name
+# #   cluster_name  = var.cluster_name
 # #   principal_arn = data.aws_iam_user.sohail_quazi.arn
 # #   type          = "STANDARD"
   
@@ -220,7 +220,7 @@ resource "aws_eks_access_entry" "cluster_admin_access" {
 
 # # Access entry for the second user
 # #resource "aws_eks_access_entry" "second_user_access" {
-# #  cluster_name  = aws_eks_cluster.eks_cluster.name
+# #  cluster_name  = var.cluster_name
 # #  principal_arn = aws_iam_user.second_user.arn
 # #  type          = "STANDARD"
 # #  
@@ -230,7 +230,7 @@ resource "aws_eks_access_entry" "cluster_admin_access" {
 
 # # Access entry for the GitHub Actions role - using resource reference instead of data reference
 # resource "aws_eks_access_entry" "github_actions_role_access" {
-#   cluster_name  = aws_eks_cluster.eks_cluster.name
+#   cluster_name  = var.cluster_name
 #   principal_arn = aws_iam_role.github_actions_role.arn
 #   type          = "STANDARD"
   
@@ -244,7 +244,7 @@ resource "aws_eks_access_entry" "cluster_admin_access" {
 
 #This grants cluster-admin permissions to all users and roles
 resource "aws_eks_access_policy_association" "admin_policy_cluster_admin" {
-  cluster_name  = aws_eks_cluster.eks_cluster.name
+  cluster_name  = var.cluster_name
   principal_arn = aws_iam_user.cluster_admin.arn
   policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
   
@@ -257,7 +257,7 @@ resource "aws_eks_access_policy_association" "admin_policy_cluster_admin" {
 
 # # EKS Access Policy for Rajat Kantjha
 # #resource "aws_eks_access_policy_association" "admin_policy_rajat" {
-# #  cluster_name  = aws_eks_cluster.eks_cluster.name
+# #  cluster_name  = var.cluster_name
 # #  principal_arn = data.aws_iam_user.rajat_kantjha.arn
 # #  policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
 # #  
@@ -269,7 +269,7 @@ resource "aws_eks_access_policy_association" "admin_policy_cluster_admin" {
 # #}
 
 # # resource "aws_eks_access_policy_association" "admin_policy_sohail" {
-# #   cluster_name  = aws_eks_cluster.eks_cluster.name
+# #   cluster_name  = var.cluster_name
 # #   principal_arn = data.aws_iam_user.sohail_quazi.arn
 # #   policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
   
@@ -281,7 +281,7 @@ resource "aws_eks_access_policy_association" "admin_policy_cluster_admin" {
 # # }
 
 # #resource "aws_eks_access_policy_association" "admin_policy_second_user" {
-# #  cluster_name  = aws_eks_cluster.eks_cluster.name
+# #  cluster_name  = var.cluster_name
 # #  principal_arn = aws_iam_user.second_user.arn
 # #  policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
 # #  
@@ -294,7 +294,7 @@ resource "aws_eks_access_policy_association" "admin_policy_cluster_admin" {
 
 # # GitHub Actions role policy association - also updated to use resource reference
 # resource "aws_eks_access_policy_association" "admin_policy_github_actions" {
-#   cluster_name  = aws_eks_cluster.eks_cluster.name
+#   cluster_name  = var.cluster_name
 #   principal_arn = aws_iam_role.github_actions_role.arn
 #   policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
   
