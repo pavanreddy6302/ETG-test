@@ -103,41 +103,48 @@
 
 
 
-#############################
-# Variables (assumed exist) #
-#############################
-# variable "aws_region" { type = string }
-# variable "cluster_name" { type = string }
-
 ########################################
-# (Assumption) Existing EKS/VPC blocks #
+# AWS provider (example)
 ########################################
-# resource "aws_eks_cluster" "eks_cluster" { ... }
-# resource "aws_vpc" "eks_vpc" { ... }
-
-########################################
-# EKS data sources for Helm connection #
-########################################
-
-# Get live EKS connection details (endpoint & CA)
-data "aws_eks_cluster" "conn" {
-  name = aws_eks_cluster.eks_cluster.name
-}
-
-# Get an authentication token for the cluster
-data "aws_eks_cluster_auth" "conn" {
-  name = aws_eks_cluster.eks_cluster.name
+provider "aws" {
+  region = var.aws_region
 }
 
 ########################################
-# IAM OIDC provider (assumed exists)   #
+# EKS connection data (no resource refs)
 ########################################
-# If you already have this, keep your existing resource and name.
-# resource "aws_iam_openid_connect_provider" "eks" { ... }
+data "aws_eks_cluster" "by_name" {
+  name = var.cluster_name
+}
 
-#############################
-# IAM Role for ALB Controller
-#############################
+data "aws_eks_cluster_auth" "by_name" {
+  name = var.cluster_name
+}
+
+########################################
+# Kubernetes Provider (token-based)
+# NOTE: no load_config_file here
+########################################
+provider "kubernetes" {
+  host                   = data.aws_eks_cluster.by_name.endpoint
+  cluster_ca_certificate = base64decode(data.aws_eks_cluster.by_name.certificate_authority[0].data)
+  token                  = data.aws_eks_cluster_auth.by_name.token
+}
+
+########################################
+# Helm Provider uses embedded kubernetes
+########################################
+provider "helm" {
+  kubernetes {
+    host                   = data.aws_eks_cluster.by_name.endpoint
+    cluster_ca_certificate = base64decode(data.aws_eks_cluster.by_name.certificate_authority[0].data)
+    token                  = data.aws_eks_cluster_auth.by_name.token
+  }
+}
+
+########################################
+# IAM Role for ALB Controller (IRSA)
+########################################
 resource "aws_iam_role" "alb_controller" {
   name = "${var.cluster_name}-alb-controller"
 
@@ -161,37 +168,20 @@ resource "aws_iam_role" "alb_controller" {
   })
 }
 
-#############################
-# ALB Controller Policy
-#############################
 resource "aws_iam_policy" "alb_controller" {
   name        = "${var.cluster_name}-alb-controller-policy"
   description = "Policy for AWS Load Balancer Controller"
   policy      = file("alb-policy.json")
 }
 
-########################################
-# ALB Controller IAM Role Policy Attach
-########################################
 resource "aws_iam_role_policy_attachment" "alb_controller" {
   policy_arn = aws_iam_policy.alb_controller.arn
   role       = aws_iam_role.alb_controller.name
 }
 
 ########################################
-# Helm Provider Configuration (no exec)
-########################################
-provider "helm" {
-  kubernetes {
-    host                   = data.aws_eks_cluster.conn.endpoint
-    cluster_ca_certificate = base64decode(data.aws_eks_cluster.conn.certificate_authority[0].data)
-    token                  = data.aws_eks_cluster_auth.conn.token
-    #load_config_file       = false
-  }
-}
-
-########################################
 # Install ALB Controller via Helm
+# (Helm provider now has a valid token)
 ########################################
 resource "helm_release" "aws_load_balancer_controller" {
   name       = "aws-load-balancer-controller"
@@ -199,12 +189,12 @@ resource "helm_release" "aws_load_balancer_controller" {
   chart      = "aws-load-balancer-controller"
   namespace  = "kube-system"
 
-  # (Optional) Pin to a compatible chart version range if you prefer
+  # Optional: pin a chart version compatible with your K8s
   # version    = ">= 1.7.0"
 
   set {
     name  = "clusterName"
-    value = aws_eks_cluster.eks_cluster.name
+    value = var.cluster_name
   }
 
   set {
@@ -222,32 +212,80 @@ resource "helm_release" "aws_load_balancer_controller" {
     value = aws_iam_role.alb_controller.arn
   }
 
+  # If you have the VPC ID as a data source or variable, use that instead of a resource ref:
+  # e.g., data "aws_vpc" "selected" { id = var.vpc_id }
+  # Or pass var.vpc_id directly.
   set {
     name  = "vpcId"
-    value = aws_vpc.eks_vpc.id
+    value = var.vpc_id
   }
 
   timeout = 600
 
   depends_on = [
-    aws_eks_cluster.eks_cluster,
     aws_iam_role.alb_controller,
     aws_iam_policy.alb_controller,
     aws_iam_role_policy_attachment.alb_controller
   ]
 }
 
-#############################
-# Useful Outputs
-#############################
-output "eks_cluster_name" {
-  description = "The name of the EKS cluster"
-  value       = aws_eks_cluster.eks_cluster.name
+########################################
+# RBAC: cluster-admin to IAM user
+########################################
+resource "kubernetes_cluster_role_binding" "admin_user" {
+  # keep your EKS Access resources if you use EKS Access Entries/Policies
+  depends_on = [
+    aws_eks_access_policy_association.admin_policy_cluster_admin,
+    aws_eks_access_entry.cluster_admin_access
+  ]
+
+  metadata {
+    name = "${var.cluster_name}-admin-binding"
+  }
+
+  role_ref {
+    api_group = "rbac.authorization.k8s.io"
+    kind      = "ClusterRole"
+    name      = "cluster-admin"
+  }
+
+  subject {
+    kind      = "User"
+    name      = aws_iam_user.cluster_admin.name
+    api_group = "rbac.authorization.k8s.io"
+  }
 }
 
-output "service_account_name" {
-  description = "The name of the Service Account"
-  value       = "aws-load-balancer-controller"
+########################################
+# RBAC: cluster-admin for ALB controller SA (optional)
+########################################
+resource "kubernetes_cluster_role_binding" "alb_controller" {
+  metadata {
+    name = "alb-controller-binding"
+  }
+
+  role_ref {
+    api_group = "rbac.authorization.k8s.io"
+    kind      = "ClusterRole"
+    name      = "cluster-admin"
+  }
+
+  subject {
+    kind      = "ServiceAccount"
+    name      = "aws-load-balancer-controller"
+    namespace = "kube-system"
+  }
+
+  # Ensure the SA exists first (if created by Helm):
+  depends_on = [helm_release.aws_load_balancer_controller]
+}
+
+########################################
+# Outputs
+########################################
+output "eks_cluster_name" {
+  description = "The name of the EKS cluster"
+  value       = var.cluster_name
 }
 
 output "alb_controller_role_arn" {
