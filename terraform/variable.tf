@@ -57,7 +57,7 @@ variable "node_instance_types" {
 variable "node_desired_size" {
   description = "Desired number of nodes in the node group"
   type        = number
-  default     = 5
+  default     = 1
 }
 
 variable "node_min_size" {
@@ -69,7 +69,7 @@ variable "node_min_size" {
 variable "node_max_size" {
   description = "Maximum number of nodes in the node group"
   type        = number
-  default     = 5
+  default     = 2
 }
 
 variable "ssh_key_name" {
@@ -174,15 +174,7 @@ variable "trusted_admin_principals" {
   
 # }
 
-# variable "github_org" {
-#   type = string
-#   default = "pavanreddy6302"
-# }
 
-# variable "github_repo" {
-#   type = string
-#   default = "ETG-test"
-# }
 
 
  
