@@ -182,15 +182,15 @@ resource "aws_secretsmanager_secret_version" "user_credentials" {
 # # EKS Access Entries
 # ##############################
 
-# # Access entry for the cluster admin user
-# # resource "aws_eks_access_entry" "cluster_admin_access" {
-# #   cluster_name  = aws_eks_cluster.eks_cluster.name
-# #   principal_arn = aws_iam_user.cluster_admin.arn
-# #   type          = "STANDARD"
+#Access entry for the cluster admin user
+resource "aws_eks_access_entry" "cluster_admin_access" {
+  cluster_name  = aws_eks_cluster.eks_cluster.name
+  principal_arn = aws_iam_user.cluster_admin.arn
+  type          = "STANDARD"
   
-# #   # Use "masters" as a valid group name
-# #   kubernetes_groups = ["masters"]
-# # }
+  # Use "masters" as a valid group name
+  kubernetes_groups = ["masters"]
+}
 
 # # Access entry for rajat.kantjha@hcltech.com
 # #resource "aws_eks_access_entry" "rajat_kantjha_access" {
@@ -246,7 +246,7 @@ resource "aws_eks_access_policy_association" "admin_policy_cluster_admin" {
     type = "cluster"
   }
   
-  #depends_on = [aws_eks_access_entry.cluster_admin_access]
+  depends_on = [aws_eks_access_entry.cluster_admin_access]
 }
 
 # # EKS Access Policy for Rajat Kantjha
