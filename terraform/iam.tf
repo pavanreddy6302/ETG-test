@@ -189,14 +189,14 @@ resource "aws_iam_role_policy_attachment" "node_ssm_core" {
 # ##############################
 
 #Access entry for the cluster admin user
-resource "aws_eks_access_entry" "cluster_admin_access" {
-  cluster_name  = var.cluster_name
-  principal_arn = aws_iam_user.cluster_admin.arn
-  type          = "STANDARD"
+# resource "aws_eks_access_entry" "cluster_admin_access" {
+#   cluster_name  = var.cluster_name
+#   principal_arn = aws_iam_user.cluster_admin.arn
+#   type          = "STANDARD"
   
-  # Use "masters" as a valid group name
-  kubernetes_groups = ["masters"]
-}
+#   # Use "masters" as a valid group name
+#   kubernetes_groups = ["masters"]
+# }
 
 # # Access entry for rajat.kantjha@hcltech.com
 # #resource "aws_eks_access_entry" "rajat_kantjha_access" {
@@ -243,17 +243,17 @@ resource "aws_eks_access_entry" "cluster_admin_access" {
 # ##############################
 
 #This grants cluster-admin permissions to all users and roles
-resource "aws_eks_access_policy_association" "admin_policy_cluster_admin" {
-  cluster_name  = var.cluster_name
-  principal_arn = aws_iam_user.cluster_admin.arn
-  policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+# resource "aws_eks_access_policy_association" "admin_policy_cluster_admin" {
+#   cluster_name  = var.cluster_name
+#   principal_arn = aws_iam_user.cluster_admin.arn
+#   policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
   
-  access_scope {
-    type = "cluster"
-  }
+#   access_scope {
+#     type = "cluster"
+#   }
   
-  depends_on = [aws_eks_access_entry.cluster_admin_access]
-}
+#   depends_on = [aws_eks_access_entry.cluster_admin_access]
+# }
 
 # # EKS Access Policy for Rajat Kantjha
 # #resource "aws_eks_access_policy_association" "admin_policy_rajat" {
