@@ -215,10 +215,7 @@ resource "helm_release" "aws_load_balancer_controller" {
   # If you have the VPC ID as a data source or variable, use that instead of a resource ref:
   # e.g., data "aws_vpc" "selected" { id = var.vpc_id }
   # Or pass var.vpc_id directly.
-  set {
-    name  = "vpcId"
-    value = var.vpc_id
-  }
+  
 
   timeout = 600
 
