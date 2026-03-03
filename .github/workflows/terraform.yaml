@@ -24,8 +24,8 @@ jobs:
           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
           aws-region: us-east-1
 
-      # # Set up Terraform
-      # - uses: hashicorp/setup-terraform@v3
+      # Set up Terraform
+      - uses: hashicorp/setup-terraform@v3
       # - name: Configure AWS credentials
       #   uses: aws-actions/configure-aws-credentials@v4
       #   with:
