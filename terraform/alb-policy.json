@@ -225,7 +225,7 @@
         "elasticloadbalancing:ModifyLoadBalancerAttributes",
         "elasticloadbalancing:DeleteLoadBalancer"
       ],
-      "Resource": "arn:aws:elasticloadbalancing:ap-south-1:388328004932:loadbalancer/net/*"
+      "Resource": "arn:aws:elasticloadbalancing:us-east-1:222634374835:loadbalancer/net/*"
     },
     {
       "Effect": "Allow",
@@ -236,7 +236,7 @@
         "elasticloadbalancing:ModifyLoadBalancerAttributes",
         "elasticloadbalancing:DeleteLoadBalancer"
       ],
-      "Resource": "arn:aws:elasticloadbalancing:ap-south-1:388328004932:loadbalancer/app/*/*"
+      "Resource": "arn:aws:elasticloadbalancing:us-east-1:222634374835:loadbalancer/app/*/*"
     },
     {
       "Effect": "Allow",
@@ -259,37 +259,3 @@
   ]
 }
 
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Principal": {
-                "Federated": "arn:aws:iam::222634374835:oidc-provider/token.actions.githubusercontent.com"
-            },
-            "Action": "sts:AssumeRoleWithWebIdentity",
-            "Condition": {
-                "StringEquals": {
-                    "token.actions.githubusercontent.com:aud": "sts.amazonaws.com"
-                },
-                "StringLike": {
-                    "token.actions.githubusercontent.com:sub": "repo:pavanreddy6302/ETG-test:*"
-                }
-            }
-        },
-        {
-            "Sid": "EksServiceAccountOIDC",
-            "Effect": "Allow",
-            "Principal": {
-                "Federated": "arn:aws:iam::222634374835:oidc-provider/oidc.eks.us-east-1.amazonaws.com/id/C3327A6988F1E735B38706D35C83C9E3"
-            },
-            "Action": "sts:AssumeRoleWithWebIdentity",
-            "Condition": {
-                "StringEquals": {
-                    "oidc.eks.us-east-1.amazonaws.com/id/C3327A6988F1E735B38706D35C83C9E3:aud": "sts.amazonaws.com",
-                    "oidc.eks.us-east-1.amazonaws.com/id/C3327A6988F1E735B38706D35C83C9E3:sub": "system:serviceaccount:kube-system:ebs-csi-controller-sa"
-                }
-            }
-        }
-    ]
-}
