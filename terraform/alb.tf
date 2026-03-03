@@ -1,6 +1,6 @@
 # Helm Provider Configuration
 provider "helm" {
-  kubernetes = {
+  kubernetes  {
     host                   = data.aws_eks_cluster.cluster.endpoint
     cluster_ca_certificate = base64decode(aws_eks_cluster.cluster.certificate_authority[0].data)
     exec = {
