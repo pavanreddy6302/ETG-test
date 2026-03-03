@@ -131,7 +131,7 @@ data "aws_eks_cluster_auth" "by_name1" {
 provider "kubernetes" {
   host                   = data.aws_eks_cluster.by_name.endpoint
   cluster_ca_certificate = base64decode(data.aws_eks_cluster.by_name.certificate_authority[0].data)
-  token                  = data.aws_eks_cluster_auth.by_name.token
+  #token                  = data.aws_eks_cluster_auth.by_name.token
 }
 
 ########################################
@@ -141,7 +141,7 @@ provider "helm" {
   kubernetes {
     host                   = data.aws_eks_cluster.by_name.endpoint
     cluster_ca_certificate = base64decode(data.aws_eks_cluster.by_name.certificate_authority[0].data)
-    token                  = data.aws_eks_cluster_auth.by_name.token
+    #token                  = data.aws_eks_cluster_auth.by_name.token
   }
 }
 
