@@ -42,7 +42,7 @@ provider "helm" {
     host                   = aws_eks_cluster.eks_cluster.endpoint
     cluster_ca_certificate = base64decode(aws_eks_cluster.eks_cluster.certificate_authority[0].data)
     exec {
-      api_version = "client.authentication.k8s.io/v1"
+      api_version = "client.authentication.k8s.io/v1beta1"
       args        = ["eks", "get-token", "--cluster-name", aws_eks_cluster.eks_cluster.name, "--region", var.aws_region]
       command     = "aws"
     }
@@ -84,6 +84,7 @@ resource "helm_release" "aws_load_balancer_controller" {
 
   depends_on = [
     aws_eks_cluster.eks_cluster,
+    aws_eks_node_group.eks_nodes,
     aws_iam_role.alb_controller, # Ensure IAM role is created before Helm release
     aws_iam_policy.alb_controller, # Ensure the policy is attached before Helm release
     aws_iam_role_policy_attachment.alb_controller # Ensure policy attachment is applied
