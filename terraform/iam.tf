@@ -198,15 +198,15 @@ resource "aws_iam_role_policy_attachment" "node_ssm_core" {
 # # # EKS Access Entries
 # # ##############################
 
-# #Access entry for the cluster admin user
-# # resource "aws_eks_access_entry" "cluster_admin_access" {
-# #   cluster_name  = var.cluster_name
-# #   principal_arn = aws_iam_user.cluster_admin.arn
-# #   type          = "STANDARD"
+#Access entry for the cluster admin user
+resource "aws_eks_access_entry" "cluster_admin_access" {
+  cluster_name  = var.cluster_name
+  principal_arn = aws_iam_user.cluster_admin.arn
+  type          = "STANDARD"
   
-# #   # Use "masters" as a valid group name
-# #   kubernetes_groups = ["masters"]
-# # }
+  # Use "masters" as a valid group name
+  kubernetes_groups = ["masters"]
+}
 
 # # # Access entry for rajat.kantjha@hcltech.com
 # # #resource "aws_eks_access_entry" "rajat_kantjha_access" {
@@ -278,42 +278,42 @@ resource "aws_eks_access_policy_association" "admin_policy_cluster_admin" {
 # # #  depends_on = [aws_eks_access_entry.rajat_kantjha_access]
 # # #}
 
-# # # resource "aws_eks_access_policy_association" "admin_policy_sohail" {
-# # #   cluster_name  = var.cluster_name
-# # #   principal_arn = data.aws_iam_user.sohail_quazi.arn
-# # #   policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+# resource "aws_eks_access_policy_association" "admin_policy_sohail" {
+#   cluster_name  = var.cluster_name
+#   principal_arn = data.aws_iam_user.sohail_quazi.arn
+#   policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
   
-# # #   access_scope {
-# # #     type = "cluster"
-# # #   }
+#   access_scope {
+#     type = "cluster"
+#   }
   
-# # #   depends_on = [aws_eks_access_entry.sohail_quazi_access]
-# # # }
+#   depends_on = [aws_eks_access_entry.sohail_quazi_access]
+# }
 
-# # #resource "aws_eks_access_policy_association" "admin_policy_second_user" {
-# # #  cluster_name  = var.cluster_name
-# # #  principal_arn = aws_iam_user.second_user.arn
-# # #  policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
-# # #  
-# # #  access_scope {
-# # #    type = "cluster"
-# # #  }
+#resource "aws_eks_access_policy_association" "admin_policy_second_user" {
+#  cluster_name  = var.cluster_name
+#  principal_arn = aws_iam_user.second_user.arn
+#  policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+#  
+#  access_scope {
+#    type = "cluster"
+#  }
   
-# # #  depends_on = [aws_eks_access_entry.second_user_access]
-# # #}
+#  depends_on = [aws_eks_access_entry.second_user_access]
+#}
 
-# # # GitHub Actions role policy association - also updated to use resource reference
-# # resource "aws_eks_access_policy_association" "admin_policy_github_actions" {
-# #   cluster_name  = var.cluster_name
-# #   principal_arn = aws_iam_role.github_actions_role.arn
-# #   policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+# GitHub Actions role policy association - also updated to use resource reference
+resource "aws_eks_access_policy_association" "admin_policy_github_actions" {
+  cluster_name  = var.cluster_name
+  principal_arn = aws_iam_role.github_actions_role.arn
+  policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
   
-# #   access_scope {
-# #     type = "cluster"
-# #   }
+  access_scope {
+    type = "cluster"
+  }
   
-# #   depends_on = [aws_eks_access_entry.github_actions_role_access]
-# # }
+  depends_on = [aws_eks_access_entry.github_actions_role_access]
+}
 
 
 
