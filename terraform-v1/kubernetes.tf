@@ -30,7 +30,7 @@ resource "aws_eks_access_policy_association" "github_actions_cluster_admin" {
     type = "cluster"
   }
  
-  depends_on = [aws_eks_access_entry.github_actions]
+  #depends_on = [aws_eks_access_entry.github_actions]
 }
  
 # provider "kubernetes" {
