@@ -1,5 +1,9 @@
 data "aws_eks_cluster" "eks_cluster1" {
   name = var.cluster_name
+
+  depends_on = [
+  aws_eks_cluster.eks_cluster
+]
 }
 
 # IAM Role for ALB Controller
