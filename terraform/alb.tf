@@ -40,12 +40,12 @@ resource "aws_iam_role" "alb_controller" {
 }
 
 # ALB Controller Policy
-# resource "aws_iam_policy" "alb_controller" {
-#   name        = "${var.cluster_name}-alb-controller-policy"
-#   description = "Policy for AWS Load Balancer Controller"
+resource "aws_iam_policy" "alb_controller" {
+  name        = "${var.cluster_name}-alb-controller-policy"
+  description = "Policy for AWS Load Balancer Controller"
   
-#   policy = file("alb-policy.json")
-# }
+  policy = file("alb-policy.json")
+}
 
 # ALB Controller IAM Role Policy Attachment
 resource "aws_iam_role_policy_attachment" "alb_controller" {
