@@ -203,14 +203,14 @@ resource "aws_eks_access_entry" "cluster_admin_access" {
 #}
 
 # Access entry for sohail.quazi@hcl.com
-resource "aws_eks_access_entry" "sohail_quazi_access" {
-  cluster_name  = aws_eks_cluster.eks_cluster.name
-  principal_arn = data.aws_iam_user.sohail_quazi.arn
-  type          = "STANDARD"
+# resource "aws_eks_access_entry" "sohail_quazi_access" {
+#   cluster_name  = aws_eks_cluster.eks_cluster.name
+#   principal_arn = data.aws_iam_user.sohail_quazi.arn
+#   type          = "STANDARD"
   
-  # Use "masters" as a valid group name
-  kubernetes_groups = ["masters"]
-}
+#   # Use "masters" as a valid group name
+#   kubernetes_groups = ["masters"]
+# }
 
 # Access entry for the second user
 #resource "aws_eks_access_entry" "second_user_access" {
