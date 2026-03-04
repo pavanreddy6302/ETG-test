@@ -155,3 +155,9 @@ variable "asset_bucket" {
   type        = string
   default     = "claimaforge-test-bucket-54321"
 }
+
+
+variable "github_actions_role_arn" {
+  description = "IAM Role ARN assumed by GitHub Actions via OIDC (role-to-assume)"
+  type        = string
+}
