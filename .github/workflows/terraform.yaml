@@ -26,12 +26,12 @@ jobs:
 
       # Set up Terraform
       - uses: hashicorp/setup-terraform@v3
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: arn:aws:iam::222634374835:role/claimaforge-cluster-github-actions
-          aws-region: us-east-1
-          
+      # - name: Configure AWS credentials
+      #   uses: aws-actions/configure-aws-credentials@v4
+      #   with:
+      #     role-to-assume: arn:aws:iam::222634374835:role/claimaforge-cluster-github-actions
+      #     aws-region: us-east-1
+
       - name: Check aws identity
         run: aws sts get-caller-identity
 
@@ -43,32 +43,32 @@ jobs:
           terraform validate
           terraform plan
 
-      - name : terraform Destroy
-        run : terraform destroy -auto-approve 
+      # - name : terraform Destroy
+      #   run : terraform destroy -auto-approve 
 
-      # Terraform Apply (without tfplan file)
-      # - name: Terraform Apply
-      #   run: terraform apply -auto-approve
+      Terraform Apply (without tfplan file)
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
 
-      # - name: Check aws identity
-      #   run: aws sts get-caller-identity
+      - name: Check aws identity
+        run: aws sts get-caller-identity
 
-      # # Install kubectl for EKS verification
-      # - name: Install kubectl
-      #   run: |
-      #     curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-      #     chmod +x kubectl
-      #     sudo mv kubectl /usr/local/bin/
+      # Install kubectl for EKS verification
+      - name: Install kubectl
+        run: |
+          curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+          chmod +x kubectl
+          sudo mv kubectl /usr/local/bin/
 
-      # # Configure kubectl to access the EKS cluster
-      # - name: Configure kubectl
-      #   run: aws eks update-kubeconfig --name demo-cluster --region ap-south-1
+      # Configure kubectl to access the EKS cluster
+      - name: Configure kubectl
+        run: aws eks update-kubeconfig --name demo-cluster --region us-east-1
 
-      # # Verify EKS cluster by getting nodes and pods
-      # - name: Verify EKS
-      #   run: |
-      #     kubectl get nodes
-      #     kubectl get pods -A
+      # Verify EKS cluster by getting nodes and pods
+      - name: Verify EKS
+        run: |
+          kubectl get nodes
+          kubectl get pods -A
 
       # - name: Install StorageClass
       #   run: |
