@@ -15,7 +15,8 @@ resource "aws_eks_cluster" "eks_cluster" {
   }
 
   version = var.cluster_version
-
+  tags = var.tags
+  
   depends_on = [
     aws_iam_role_policy_attachment.eks_cluster_AmazonEKSClusterPolicy,
     aws_iam_role_policy_attachment.eks_cluster_AmazonEKSServicePolicy
@@ -42,6 +43,7 @@ resource "aws_eks_node_group" "node_group" {
 
   instance_types = var.node_instance_types
 
+  tags = var.tags
 
   dynamic "remote_access" {
     for_each = var.ssh_key_name != "" ? [1] : []
