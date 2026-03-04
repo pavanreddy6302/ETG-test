@@ -46,7 +46,7 @@ jobs:
       # - name : terraform Destroy
       #   run : terraform destroy -auto-approve 
 
-      Terraform Apply (without tfplan file)
+      #Terraform Apply (without tfplan file)
       - name: Terraform Apply
         run: terraform apply -auto-approve
 
