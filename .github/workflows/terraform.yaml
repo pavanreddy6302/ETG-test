@@ -44,8 +44,8 @@ jobs:
       #   run : terraform destroy -auto-approve 
 
       # Terraform Apply (without tfplan file)
-      - name: Terraform Apply
-        run: terraform apply -auto-approve
+      # - name: Terraform Apply
+      #   run: terraform apply -auto-approve
 
       - name: Check aws identity
         run: aws sts get-caller-identity
