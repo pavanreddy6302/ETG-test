@@ -201,7 +201,7 @@ resource "aws_iam_role_policy_attachment" "node_ssm_core" {
 #Access entry for the cluster admin user
 resource "aws_eks_access_entry" "cluster_admin_access" {
   cluster_name  = var.cluster_name
-  principal_arn = aws_iam_user.cluster_admin.arn
+  principal_arn = "arn:aws:iam::222634374835:user/demo-cluster-admin"
   type          = "STANDARD"
   
   # Use "masters" as a valid group name
