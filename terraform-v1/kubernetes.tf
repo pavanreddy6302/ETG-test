@@ -4,11 +4,11 @@ data "aws_eks_cluster" "eks_cluster" {
 }
 
 provider "kubernetes" {
-  host                   = aws_eks_cluster.eks_cluster.endpoint
-  cluster_ca_certificate = base64decode(aws_eks_cluster.eks_cluster.certificate_authority[0].data)
+  host                   = data.aws_eks_cluster.eks_cluster.endpoint
+  cluster_ca_certificate = base64decode(data.aws_eks_cluster.eks_cluster.certificate_authority[0].data)
   exec {
     api_version = "client.authentication.k8s.io/v1beta1"
-    args        = ["eks", "get-token", "--cluster-name", aws_eks_cluster.eks_cluster.name, "--region", var.aws_region]
+    args        = ["eks", "get-token", "--cluster-name", data.aws_eks_cluster.eks_cluster.name, "--region", var.aws_region]
     command     = "aws"
   }
 }
@@ -18,7 +18,7 @@ resource "kubernetes_cluster_role_binding" "admin_user" {
   depends_on = [
     aws_eks_access_policy_association.admin_policy_cluster_admin,
     aws_eks_access_entry.cluster_admin_access,
-    aws_eks_cluster.eks_cluster
+    data.aws_eks_cluster.eks_cluster
   ]
 
   metadata {

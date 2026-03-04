@@ -1,3 +1,7 @@
+data "aws_eks_cluster" "eks_cluster" {
+  name = var.cluster_name
+}
+
 # IAM Role for ALB Controller
 resource "aws_iam_role" "alb_controller" {
   name = "${var.cluster_name}-alb-controller"
@@ -39,11 +43,11 @@ resource "aws_iam_role_policy_attachment" "alb_controller" {
 # Helm Provider Configuration
 provider "helm" {
   kubernetes {
-    host                   = aws_eks_cluster.eks_cluster.endpoint
-    cluster_ca_certificate = base64decode(aws_eks_cluster.eks_cluster.certificate_authority[0].data)
+    host                   = data.aws_eks_cluster.eks_cluster.endpoint
+    cluster_ca_certificate = base64decode(data.aws_eks_cluster.eks_cluster.certificate_authority[0].data)
     exec {
       api_version = "client.authentication.k8s.io/v1beta1"
-      args        = ["eks", "get-token", "--cluster-name", aws_eks_cluster.eks_cluster.name, "--region", var.aws_region]
+      args        = ["eks", "get-token", "--cluster-name", data.aws_eks_cluster.eks_cluster.name, "--region", var.aws_region]
       command     = "aws"
     }
   }
@@ -58,7 +62,7 @@ resource "helm_release" "aws_load_balancer_controller" {
 
   set {
     name  = "clusterName"
-    value = aws_eks_cluster.eks_cluster.name
+    value = data.aws_eks_cluster.eks_cluster.name
   }
 
   set {
@@ -84,7 +88,7 @@ resource "helm_release" "aws_load_balancer_controller" {
   timeout = 600
 
   depends_on = [
-    aws_eks_cluster.eks_cluster,
+    data.aws_eks_cluster.eks_cluster,
     aws_iam_role.alb_controller, # Ensure IAM role is created before Helm release
     aws_iam_policy.alb_controller, # Ensure the policy is attached before Helm release
     aws_iam_role_policy_attachment.alb_controller # Ensure policy attachment is applied
@@ -92,7 +96,7 @@ resource "helm_release" "aws_load_balancer_controller" {
 }
 output "eks_cluster_name" {
   description = "The name of the EKS cluster"
-  value       = aws_eks_cluster.eks_cluster.name
+  value       = data.aws_eks_cluster.eks_cluster.name
 }
 
 output "service_account_name" {
