@@ -132,7 +132,11 @@ resource "aws_iam_policy" "eks_admin" {
           "s3:*",
           "rds:*",
           "kms:Decrypt",
-          "kms:DescribeKey"
+          "kms:DescribeKey",
+          "iam:GetPolicy",
+          "iam:CreatePolicy",
+          "iam:AttachRolePolicy",
+          "iam:PutRolePolicy"
         ],
         Resource = "*"
       }
