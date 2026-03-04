@@ -122,7 +122,9 @@
 # }
 
 
-# alb.tf
+##############################
+# IAM Role & Policy for ALB Controller
+##############################
 
 # IAM Role for ALB Controller
 resource "aws_iam_role" "alb_controller" {
@@ -132,7 +134,9 @@ resource "aws_iam_role" "alb_controller" {
     Version = "2012-10-17",
     Statement = [{
       Effect = "Allow",
-      Principal = { Federated = aws_iam_openid_connect_provider.eks.arn },
+      Principal = {
+        Federated = aws_iam_openid_connect_provider.eks.arn
+      },
       Action = "sts:AssumeRoleWithWebIdentity",
       Condition = {
         StringEquals = {
@@ -146,7 +150,7 @@ resource "aws_iam_role" "alb_controller" {
   })
 }
 
-# ALB Controller IAM Policy
+# IAM Policy for ALB Controller
 resource "aws_iam_policy" "alb_controller" {
   name        = "${var.cluster_name}-alb-controller-policy"
   description = "Policy for AWS Load Balancer Controller"
@@ -155,11 +159,26 @@ resource "aws_iam_policy" "alb_controller" {
 
 # Attach Policy to Role
 resource "aws_iam_role_policy_attachment" "alb_controller" {
-  role       = aws_iam_role.alb_controller.name
   policy_arn = aws_iam_policy.alb_controller.arn
+  role       = aws_iam_role.alb_controller.name
 }
 
-# Helm Release for ALB Controller
+##############################
+# Install ALB Controller via Helm
+##############################
+
+provider "helm" {
+  kubernetes {
+    host                   = data.aws_eks_cluster.cluster.endpoint
+    cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority[0].data)
+    exec {
+      api_version = "client.authentication.k8s.io/v1beta1"
+      args        = ["eks", "get-token", "--cluster-name", var.cluster_name, "--region", var.aws_region]
+      command     = "aws"
+    }
+  }
+}
+
 resource "helm_release" "aws_load_balancer_controller" {
   name       = "aws-load-balancer-controller"
   repository = "https://aws.github.io/eks-charts"
@@ -194,9 +213,9 @@ resource "helm_release" "aws_load_balancer_controller" {
   timeout = 600
 
   depends_on = [
+    data.aws_eks_cluster.cluster,
     aws_iam_role.alb_controller,
     aws_iam_policy.alb_controller,
-    aws_iam_role_policy_attachment.alb_controller,
-    data.aws_eks_cluster.cluster
+    aws_iam_role_policy_attachment.alb_controller
   ]
 }

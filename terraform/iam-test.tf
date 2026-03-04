@@ -86,7 +86,7 @@ resource "aws_iam_role" "github_actions_role" {
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
-    Statement = [{
+    Statement = [ {
       Effect = "Allow"
       Principal = { Federated = aws_iam_openid_connect_provider.github.arn }
       Action = "sts:AssumeRoleWithWebIdentity"
@@ -98,7 +98,7 @@ resource "aws_iam_role" "github_actions_role" {
           "token.actions.githubusercontent.com:sub" = "repo:pavanreddy6302/ETG-test:*"
         }
       }
-    }]
+    } ]
   })
 }
 
@@ -138,7 +138,7 @@ resource "aws_iam_role" "vpc_cni" {
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
-    Statement = [{
+    Statement = [ {
       Effect = "Allow"
       Principal = { Federated = aws_iam_openid_connect_provider.eks.arn }
       Action = "sts:AssumeRoleWithWebIdentity"
@@ -148,7 +148,7 @@ resource "aws_iam_role" "vpc_cni" {
           "${replace(aws_iam_openid_connect_provider.eks.url, "https://", "")}:sub" = "system:serviceaccount:kube-system:aws-node"
         }
       }
-    }]
+    } ]
   })
 }
 
@@ -163,7 +163,7 @@ resource "aws_iam_role" "ebs_csi_driver" {
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
-    Statement = [{
+    Statement = [ {
       Effect = "Allow"
       Principal = { Federated = aws_iam_openid_connect_provider.eks.arn }
       Action = "sts:AssumeRoleWithWebIdentity"
@@ -173,43 +173,11 @@ resource "aws_iam_role" "ebs_csi_driver" {
           "${replace(aws_iam_openid_connect_provider.eks.url, "https://", "")}:sub" = "system:serviceaccount:kube-system:ebs-csi-controller-sa"
         }
       }
-    }]
+    } ]
   })
 }
 
 resource "aws_iam_role_policy_attachment" "ebs_csi_driver_policy" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
   role       = aws_iam_role.ebs_csi_driver.name
-}
-
-# AWS Load Balancer Controller (ALB)
-resource "aws_iam_role" "alb_controller" {
-  name = "${var.cluster_name}-alb-controller"
-
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [{
-      Effect = "Allow"
-      Principal = { Federated = aws_iam_openid_connect_provider.eks.arn }
-      Action = "sts:AssumeRoleWithWebIdentity"
-      Condition = {
-        StringEquals = {
-          "${replace(aws_iam_openid_connect_provider.eks.url, "https://", "")}:aud" = "sts.amazonaws.com"
-        }
-        StringLike = {
-          "${replace(aws_iam_openid_connect_provider.eks.url, "https://", "")}:sub" = "system:serviceaccount:kube-system:aws-load-balancer-controller"
-        }
-      }
-    }]
-  })
-}
-
-resource "aws_iam_policy" "alb_controller" {
-  name   = "${var.cluster_name}-alb-controller-policy"
-  policy = file("alb-policy.json")
-}
-
-resource "aws_iam_role_policy_attachment" "alb_controller_attach" {
-  policy_arn = aws_iam_policy.alb_controller.arn
-  role       = aws_iam_role.alb_controller.name
 }
