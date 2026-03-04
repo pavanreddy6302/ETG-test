@@ -174,7 +174,7 @@ variable "trusted_admin_principals" {
   
 # }
 
-variable "cluster_admin" {
+variable "aws_iam_user" {
   type = string
   default = "demo-cluster-admin"
   
