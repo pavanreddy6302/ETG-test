@@ -78,10 +78,10 @@ resource "aws_iam_role_policy_attachment" "node_ssm_core" {
 # # IAM Users for Cluster Access
 # ##############################
 
-# # ##Cluster admin user
-# resource "aws_iam_user" "cluster_admin" {
-#   name = "${var.cluster_name}-admin"
-# }
+# ##Cluster admin user
+resource "aws_iam_user" "cluster_admin" {
+  name = "${var.cluster_name}-admin"
+}
 
 # # resource "aws_iam_access_key" "cluster_admin" {
 # #   user = aws_iam_user.cluster_admin.name
