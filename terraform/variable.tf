@@ -174,7 +174,11 @@ variable "trusted_admin_principals" {
   
 # }
 
-
+variable "cluster_admin" {
+  type = "string"
+  default = "demo-cluster-admin"
+  
+}
 
 
  
