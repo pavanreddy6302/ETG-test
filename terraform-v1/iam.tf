@@ -136,7 +136,9 @@ resource "aws_iam_policy" "eks_admin" {
           "iam:GetPolicy",
           "iam:CreatePolicy",
           "iam:AttachRolePolicy",
-          "iam:PutRolePolicy"
+          "iam:PutRolePolicy",
+          "ec2:*",
+          "secretsmanager:*"
         ],
         Resource = "*"
       }
