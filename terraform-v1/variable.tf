@@ -157,7 +157,7 @@ variable "asset_bucket" {
 }
 
 
-variable "github_actions_role_arn" {
-  description = "IAM Role ARN assumed by GitHub Actions via OIDC (role-to-assume)"
-  type        = string
-}
+# variable "github_actions_role_arn" {
+#   description = "IAM Role ARN assumed by GitHub Actions via OIDC (role-to-assume)"
+#   type        = string
+# }
