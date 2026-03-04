@@ -88,6 +88,7 @@ variable "addon_service_account_names" {
 }
 
 # Tags variables
+variable "environment" { type = string }
 variable "tags" {
   description = "A map of tags to add to all resources"
   type        = map(string)
@@ -135,7 +136,3 @@ variable "asset_bucket" {
   type        = string
 }
 
-variable "environment" { type = string }
-variable "tags" {
-  type = map(string)
-}
