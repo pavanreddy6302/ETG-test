@@ -1,6 +1,11 @@
-##############################
+#############################################
+# 0️⃣ AWS Caller Identity (needed for GitHub OIDC)
+#############################################
+data "aws_caller_identity" "current" {}
+
+#############################################
 # 1️⃣ EKS Cluster Role
-##############################
+#############################################
 data "aws_iam_policy_document" "eks_cluster_assume_role_policy" {
   statement {
     actions = ["sts:AssumeRole"]
@@ -26,9 +31,9 @@ resource "aws_iam_role_policy_attachment" "eks_cluster_AmazonEKSServicePolicy" {
   role       = aws_iam_role.eks_cluster_role.name
 }
 
-##############################
+#############################################
 # 2️⃣ Node Group Role
-##############################
+#############################################
 data "aws_iam_policy_document" "eks_node_assume_role_policy" {
   statement {
     actions = ["sts:AssumeRole"]
@@ -64,9 +69,9 @@ resource "aws_iam_role_policy_attachment" "node_ssm_core" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
-##############################
+#############################################
 # 3️⃣ GitHub Actions OIDC Role
-##############################
+#############################################
 resource "aws_iam_role" "github_actions_role" {
   name = "${var.cluster_name}-github-actions"
 
@@ -75,7 +80,9 @@ resource "aws_iam_role" "github_actions_role" {
     Statement = [
       {
         Effect = "Allow",
-        Principal = { Federated = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:oidc-provider/token.actions.githubusercontent.com" },
+        Principal = {
+          Federated = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:oidc-provider/token.actions.githubusercontent.com"
+        },
         Action = "sts:AssumeRoleWithWebIdentity",
         Condition = {
           StringEquals = {
@@ -95,10 +102,30 @@ resource "aws_iam_role_policy_attachment" "github_admin_access" {
   policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
 }
 
-##############################
-# 4️⃣ IAM Roles for Add-ons
-##############################
+#############################################
+# 4️⃣ EKS OIDC Provider for Add-ons
+#############################################
+data "aws_eks_cluster" "eks_cluster" {
+  name = var.cluster_name
+}
 
+data "aws_eks_cluster_auth" "eks_cluster" {
+  name = var.cluster_name
+}
+
+resource "aws_iam_openid_connect_provider" "eks" {
+  url             = data.aws_eks_cluster.eks_cluster.identity[0].oidc[0].issuer
+  client_id_list  = ["sts.amazonaws.com"]
+  thumbprint_list = [data.tls_certificate.eks.certificates[0].sha1_fingerprint]
+}
+
+data "tls_certificate" "eks" {
+  url = data.aws_eks_cluster.eks_cluster.identity[0].oidc[0].issuer
+}
+
+#############################################
+# 5️⃣ IAM Roles for Add-ons
+#############################################
 # EBS CSI Driver
 resource "aws_iam_role" "ebs_csi_driver" {
   name = "${var.cluster_name}-ebs-csi-driver"
@@ -107,12 +134,12 @@ resource "aws_iam_role" "ebs_csi_driver" {
     Version = "2012-10-17",
     Statement = [{
       Effect = "Allow",
-      Principal = { Federated = data.aws_iam_openid_connect_provider.eks.arn },
+      Principal = { Federated = aws_iam_openid_connect_provider.eks.arn },
       Action = "sts:AssumeRoleWithWebIdentity",
       Condition = {
         StringEquals = {
-          "${replace(data.aws_iam_openid_connect_provider.eks.url, "https://", "")}:aud" = "sts.amazonaws.com",
-          "${replace(data.aws_iam_openid_connect_provider.eks.url, "https://", "")}:sub" = "system:serviceaccount:kube-system:ebs-csi-controller-sa"
+          "${replace(aws_iam_openid_connect_provider.eks.url, "https://", "")}:aud" = "sts.amazonaws.com",
+          "${replace(aws_iam_openid_connect_provider.eks.url, "https://", "")}:sub" = "system:serviceaccount:kube-system:ebs-csi-controller-sa"
         }
       }
     }]
@@ -132,12 +159,12 @@ resource "aws_iam_role" "vpc_cni" {
     Version = "2012-10-17",
     Statement = [{
       Effect = "Allow",
-      Principal = { Federated = data.aws_iam_openid_connect_provider.eks.arn },
+      Principal = { Federated = aws_iam_openid_connect_provider.eks.arn },
       Action = "sts:AssumeRoleWithWebIdentity",
       Condition = {
         StringEquals = {
-          "${replace(data.aws_iam_openid_connect_provider.eks.url, "https://", "")}:aud" = "sts.amazonaws.com",
-          "${replace(data.aws_iam_openid_connect_provider.eks.url, "https://", "")}:sub" = "system:serviceaccount:kube-system:aws-node"
+          "${replace(aws_iam_openid_connect_provider.eks.url, "https://", "")}:aud" = "sts.amazonaws.com",
+          "${replace(aws_iam_openid_connect_provider.eks.url, "https://", "")}:sub" = "system:serviceaccount:kube-system:aws-node"
         }
       }
     }]
