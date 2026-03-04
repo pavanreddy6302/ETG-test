@@ -80,7 +80,7 @@ resource "aws_iam_role_policy_attachment" "node_ssm_core" {
 
 # ##Cluster admin user
 resource "aws_iam_user" "cluster_admin" {
-  name = "${var.cluster_name}-admin"
+  name = "demo-cluster-admin"
 }
 
 # # resource "aws_iam_access_key" "cluster_admin" {
