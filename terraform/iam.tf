@@ -116,22 +116,22 @@ resource "aws_iam_user" "cluster_admin" {
 # # #}
 
 # GitHub Actions role - creating the role, not referencing it
-resource "aws_iam_role" "github_actions_role" {
-  name = "claimaforge-cluster-github-actions"
+# resource "aws_iam_role" "github_actions_role" {
+#   name = "claimaforge-cluster-github-actions"
   
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17",
-    Statement = [
-      {
-        Effect = "Allow",
-        Principal = {
-          Service = "ec2.amazonaws.com"  # Update this with the appropriate principal for GitHub Actions
-        },
-        Action = "sts:AssumeRole"
-      }
-    ]
-  })
-}
+#   assume_role_policy = jsonencode({
+#     Version = "2012-10-17",
+#     Statement = [
+#       {
+#         Effect = "Allow",
+#         Principal = {
+#           Service = "ec2.amazonaws.com"  # Update this with the appropriate principal for GitHub Actions
+#         },
+#         Action = "sts:AssumeRole"
+#       }
+#     ]
+#   })
+# }
 
 # # ##############################
 # # # IAM Policies
