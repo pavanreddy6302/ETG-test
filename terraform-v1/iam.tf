@@ -72,17 +72,17 @@ resource "aws_iam_access_key" "cluster_admin" {
 }
 
 # Store credentials
-resource "aws_secretsmanager_secret" "user_credentials" {
-  name = "${var.cluster_name}-admin-credential"
-}
+# resource "aws_secretsmanager_secret" "user_credentials" {
+#   name = "${var.cluster_name}-admin-credential"
+# }
 
-resource "aws_secretsmanager_secret_version" "user_credentials" {
-  secret_id = aws_secretsmanager_secret.user_credentials.id
-  secret_string = jsonencode({
-    access_key = aws_iam_access_key.cluster_admin.id
-    secret_key = aws_iam_access_key.cluster_admin.secret
-  })
-}
+# resource "aws_secretsmanager_secret_version" "user_credentials" {
+#   secret_id = aws_secretsmanager_secret.user_credentials.id
+#   secret_string = jsonencode({
+#     access_key = aws_iam_access_key.cluster_admin.id
+#     secret_key = aws_iam_access_key.cluster_admin.secret
+#   })
+# }
 
 # GitHub Actions role - creating the role, not referencing it
 resource "aws_iam_role" "github_actions_role" {
