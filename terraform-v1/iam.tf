@@ -73,7 +73,7 @@ resource "aws_iam_access_key" "cluster_admin" {
 
 # Store credentials
 resource "aws_secretsmanager_secret" "user_credentials" {
-  name = "${var.cluster_name}-admin-credentials"
+  name = "${var.cluster_name}-admin-credential"
 }
 
 resource "aws_secretsmanager_secret_version" "user_credentials" {
