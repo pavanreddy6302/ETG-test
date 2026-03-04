@@ -47,11 +47,11 @@ jobs:
       - name: Terraform Apply
         run: terraform apply -auto-approve
 
-      # - name: Configure AWS credentials
-      #   uses: aws-actions/configure-aws-credentials@v4
-      #   with:
-      #     role-to-assume: arn:aws:iam::222634374835:role/demo-cluster--eks-role
-      #     aws-region: us-east-1
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::222634374835:role/github-actions-eks-role
+          aws-region: us-east-1
 
       - name: Check aws identity
         run: aws sts get-caller-identity
