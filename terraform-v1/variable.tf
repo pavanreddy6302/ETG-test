@@ -123,7 +123,7 @@ variable "postgres_username" {
 variable "github_org" {
   description = "GitHub organization name"
   type        = string
-  default     = "hcl-x"
+  default     = "pavanreddy6302"
 }
 
 variable "key_name" {
