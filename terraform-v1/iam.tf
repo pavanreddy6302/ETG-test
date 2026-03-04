@@ -133,10 +133,7 @@ resource "aws_iam_policy" "eks_admin" {
           "rds:*",
           "kms:Decrypt",
           "kms:DescribeKey",
-          "iam:GetPolicy",
-          "iam:CreatePolicy",
-          "iam:AttachRolePolicy",
-          "iam:PutRolePolicy",
+          "iam:*",
           "ec2:*",
           "secretsmanager:*"
         ],
