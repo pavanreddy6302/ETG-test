@@ -16,7 +16,7 @@ resource "aws_eks_cluster" "eks_cluster" {
 
   version = var.cluster_version
   tags = var.tags
-  
+
   depends_on = [
     aws_iam_role_policy_attachment.eks_cluster_AmazonEKSClusterPolicy,
     aws_iam_role_policy_attachment.eks_cluster_AmazonEKSServicePolicy
@@ -40,7 +40,11 @@ resource "aws_eks_node_group" "node_group" {
      "clusterType" = "solrcloud"
      "clustertype" = "zookeeper"
   }
-
+ launch_template {
+    id      = aws_launch_template.eks_node_lt.id
+    version = "$Latest"
+  }
+  
   instance_types = var.node_instance_types
 
   tags = var.tags
@@ -59,3 +63,34 @@ resource "aws_eks_node_group" "node_group" {
   ]
 }
 
+# ------------------------------------------------------------
+# Launch Template for EKS nodes — ensures tags on instances, volumes, and ENIs
+# ------------------------------------------------------------
+resource "aws_launch_template" "eks_node_lt" {
+  name_prefix = "${var.cluster_name}-node-lt-"
+
+  # Give instances a friendly Name tag in EC2 console
+  tag_specifications {
+    resource_type = "instance"
+    tags = {
+      #Name            = "${var.cluster_name}-node"
+      cost-center-id  = "CC010"    
+    }
+  }
+
+  # Tag all EBS volumes created for the nodes
+  tag_specifications {
+    resource_type = "volume"
+    tags = {
+      cost-center-id  = "CC010"    
+    }
+  }
+
+  # Tag all ENIs attached to the nodes
+  tag_specifications {
+    resource_type = "network-interface"
+    tags = {
+      cost-center-id  = "CC010"    
+    }
+  }
+}
