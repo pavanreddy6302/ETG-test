@@ -248,22 +248,22 @@ resource "aws_iam_role_policy_attachment" "node_ssm_core" {
 # #   kubernetes_groups = ["masters"]
 # # }
 
-# # ##############################
-# # # EKS Access Policy for Admin Access
-# # ##############################
+# ##############################
+# # EKS Access Policy for Admin Access
+# ##############################
 
-# #This grants cluster-admin permissions to all users and roles
-# # resource "aws_eks_access_policy_association" "admin_policy_cluster_admin" {
-# #   cluster_name  = var.cluster_name
-# #   principal_arn = aws_iam_user.cluster_admin.arn
-# #   policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+#This grants cluster-admin permissions to all users and roles
+resource "aws_eks_access_policy_association" "admin_policy_cluster_admin" {
+  cluster_name  = var.cluster_name
+  principal_arn = aws_iam_user.cluster_admin.arn
+  policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
   
-# #   access_scope {
-# #     type = "cluster"
-# #   }
+  access_scope {
+    type = "cluster"
+  }
   
-# #   depends_on = [aws_eks_access_entry.cluster_admin_access]
-# # }
+  depends_on = [aws_eks_access_entry.cluster_admin_access]
+}
 
 # # # EKS Access Policy for Rajat Kantjha
 # # #resource "aws_eks_access_policy_association" "admin_policy_rajat" {
