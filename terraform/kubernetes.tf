@@ -66,15 +66,12 @@ data "aws_eks_cluster_auth" "cluster" {
   depends_on = [aws_eks_cluster.eks_cluster]
 }
 
+# Kubernetes provider using the data
 provider "kubernetes" {
   host                   = data.aws_eks_cluster.cluster.endpoint
   cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority[0].data)
   token                  = data.aws_eks_cluster_auth.cluster.token
-
-  # Ensure Kubernetes provider waits for cluster creation
-  depends_on = [aws_eks_cluster.eks_cluster]
 }
-
 # Admin User ClusterRoleBinding
 resource "kubernetes_cluster_role_binding" "admin_user" {
   metadata {
