@@ -51,7 +51,7 @@ variable "cluster_version" {
 variable "node_instance_types" {
   description = "List of EC2 instance types for worker nodes"
   type        = list(string)
-  default     = ["t3a.xlarge"]  # Modified from t2.micro as it's too small for EKS workloads
+  default     = ["t3a.micro"]  # Modified from t2.micro as it's too small for EKS workloads
 }
 
 variable "node_desired_size" {
@@ -69,7 +69,7 @@ variable "node_min_size" {
 variable "node_max_size" {
   description = "Maximum number of nodes in the node group"
   type        = number
-  default     = 2
+  default     = 1
 }
 
 variable "ssh_key_name" {
