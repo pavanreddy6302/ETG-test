@@ -239,14 +239,14 @@ resource "aws_eks_access_entry" "cluster_admin_access" {
 # # #}
 
 # Access entry for the GitHub Actions role - using resource reference instead of data reference
-resource "aws_eks_access_entry" "github_actions_role_access" {
-  cluster_name  = var.cluster_name
-  principal_arn = aws_iam_role.github_actions_role.arn
-  type          = "STANDARD"
+# resource "aws_eks_access_entry" "github_actions_role_access" {
+#   cluster_name  = var.cluster_name
+#   principal_arn = aws_iam_role.github_actions_role.arn
+#   type          = "STANDARD"
   
-  # Use "masters" as a valid group name
-  kubernetes_groups = ["masters"]
-}
+#   # Use "masters" as a valid group name
+#   kubernetes_groups = ["masters"]
+# }
 
 # ##############################
 # # EKS Access Policy for Admin Access
