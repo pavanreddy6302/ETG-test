@@ -255,7 +255,7 @@ resource "aws_eks_access_entry" "github_actions_role_access" {
 #This grants cluster-admin permissions to all users and roles
 resource "aws_eks_access_policy_association" "admin_policy_cluster_admin" {
   cluster_name  = var.cluster_name
-  principal_arn = aws_iam_user.cluster_admin.arn
+  principal_arn = "arn:aws:iam::222634374835:user/demo-cluster-admin"
   policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
   
   access_scope {
