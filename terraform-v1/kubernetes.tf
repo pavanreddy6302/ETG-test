@@ -14,11 +14,11 @@ provider "kubernetes" {
 }
 
 # Creates an access entry for the IAM role that runs Terraform in CI
-resource "aws_eks_access_entry" "github_actions" {
-  cluster_name  = var.cluster_name
-  principal_arn = "arn:aws:iam::222634374835:role/claimaforge-cluster-github-actions"
-  type          = "STANDARD"
-}
+# resource "aws_eks_access_entry" "github_actions" {
+#   cluster_name  = var.cluster_name
+#   principal_arn = "arn:aws:iam::222634374835:role/claimaforge-cluster-github-actions"
+#   type          = "STANDARD"
+# }
  
 # Grants cluster-admin permissions to that role
 resource "aws_eks_access_policy_association" "github_actions_cluster_admin" {
