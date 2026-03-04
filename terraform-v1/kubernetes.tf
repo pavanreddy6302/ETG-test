@@ -19,13 +19,13 @@ provider "kubernetes" {
 # Grants cluster-admin permissions to that role
 resource "aws_eks_access_policy_association" "github_actions_cluster_admin" {
   cluster_name  = var.cluster_name
-  principal_arn = "arn:aws:iam::222634374835:role/claimaforge-cluster-github-actions"
+  #principal_arn = "arn:aws:iam::222634374835:role/claimaforge-cluster-github-actions"
+  principal_arn = aws_iam_role.github_actions_role.arn
   policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
  
   access_scope {
     type = "cluster"
   }
- 
 }
  
 
