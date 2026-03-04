@@ -26,11 +26,11 @@ jobs:
 
       # Set up Terraform
       - uses: hashicorp/setup-terraform@v3
-      # - name: Configure AWS credentials
-      #   uses: aws-actions/configure-aws-credentials@v4
-      #   with:
-      #     role-to-assume: arn:aws:iam::222634374835:role/claimaforge-cluster-github-actions
-      #     aws-region: us-east-1
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::222634374835:role/claimaforge-cluster-github-actions
+          aws-region: us-east-1
 
       - name: Check aws identity
         run: aws sts get-caller-identity
@@ -70,10 +70,10 @@ jobs:
           kubectl get nodes
           kubectl get pods -A
 
-      # - name: Install StorageClass
-      #   run: |
-      #     kubectl apply --dry-run=client -f storageclass.yaml -o yaml
-      #     kubectl apply -f storageclass.yaml
+      - name: Install StorageClass
+        run: |
+          kubectl apply --dry-run=client -f storageclass.yaml -o yaml
+          kubectl apply -f storageclass.yaml
 
       # - name: Create kubernetes secrets
       #   run: |-
