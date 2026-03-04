@@ -134,20 +134,9 @@ resource "aws_iam_role" "alb_controller" {
     Version = "2012-10-17",
     Statement = [{
       Effect = "Allow",
-      Principal = {
-        Federated = aws_iam_openid_connect_provider.eks.arn
-      },
-      Action = "sts:AssumeRoleWithWebIdentity",
-      Condition = {
-        StringEquals = {
-          "${replace(aws_iam_openid_connect_provider.eks.url, "https://", "")}:aud" = "sts.amazonaws.com"
-        },
-        StringLike = {
-          "${replace(aws_iam_openid_connect_provider.eks.url, "https://", "")}:sub" = "system:serviceaccount:kube-system:aws-load-balancer-controller"
-        }
-      }
-    }]
-  })
+      Principal = { Federated = data.aws_iam_openid_connect_provider.eks.arn }
+"${replace(data.aws_iam_openid_connect_provider.eks.url, "https://", "")}:aud"
+"${replace(data.aws_iam_openid_connect_provider.eks.url, "https://", "")}:sub"
 }
 
 # IAM Policy for ALB Controller
