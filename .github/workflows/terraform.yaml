@@ -65,7 +65,7 @@ jobs:
 
       # Configure kubectl to access the EKS cluster
       - name: Configure kubectl
-        run: aws eks update-kubeconfig --name demo-cluster --region us-east-1
+        run: aws eks update-kubeconfig --name demo-cluster --region ap-south-1
 
       # Verify EKS cluster by getting nodes and pods
       - name: Verify EKS
