@@ -88,12 +88,11 @@ variable "addon_service_account_names" {
 }
 
 # Tags variables
-variable "environment" { type = string }
 variable "tags" {
   description = "A map of tags to add to all resources"
   type        = map(string)
   default     = {
-    Environment = "test"
+    cost-center-id = "CC010"
     Terraform   = "true"
   }
 }
