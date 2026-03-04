@@ -79,9 +79,9 @@ resource "aws_iam_role_policy_attachment" "node_ssm_core" {
 # ##############################
 
 # # ##Cluster admin user
-# # resource "aws_iam_user" "cluster_admin" {
-# #   name = "${var.cluster_name}-admin"
-# # }
+resource "aws_iam_user" "cluster_admin" {
+  name = "${var.cluster_name}-admin"
+}
 
 # # resource "aws_iam_access_key" "cluster_admin" {
 # #   user = aws_iam_user.cluster_admin.name
@@ -115,23 +115,23 @@ resource "aws_iam_role_policy_attachment" "node_ssm_core" {
 # # #  name = "second-eks-user"
 # # #}
 
-# # # GitHub Actions role - creating the role, not referencing it
-# # resource "aws_iam_role" "github_actions_role" {
-# #   name = "claimaforge-cluster-github-actions"
+# GitHub Actions role - creating the role, not referencing it
+resource "aws_iam_role" "github_actions_role" {
+  name = "claimaforge-cluster-github-actions"
   
-# #   assume_role_policy = jsonencode({
-# #     Version = "2012-10-17",
-# #     Statement = [
-# #       {
-# #         Effect = "Allow",
-# #         Principal = {
-# #           Service = "ec2.amazonaws.com"  # Update this with the appropriate principal for GitHub Actions
-# #         },
-# #         Action = "sts:AssumeRole"
-# #       }
-# #     ]
-# #   })
-# # }
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Principal = {
+          Service = "ec2.amazonaws.com"  # Update this with the appropriate principal for GitHub Actions
+        },
+        Action = "sts:AssumeRole"
+      }
+    ]
+  })
+}
 
 # # ##############################
 # # # IAM Policies
@@ -238,15 +238,15 @@ resource "aws_eks_access_entry" "cluster_admin_access" {
 # # #  kubernetes_groups = ["masters"]
 # # #}
 
-# # # Access entry for the GitHub Actions role - using resource reference instead of data reference
-# # resource "aws_eks_access_entry" "github_actions_role_access" {
-# #   cluster_name  = var.cluster_name
-# #   principal_arn = aws_iam_role.github_actions_role.arn
-# #   type          = "STANDARD"
+# Access entry for the GitHub Actions role - using resource reference instead of data reference
+resource "aws_eks_access_entry" "github_actions_role_access" {
+  cluster_name  = var.cluster_name
+  principal_arn = aws_iam_role.github_actions_role.arn
+  type          = "STANDARD"
   
-# #   # Use "masters" as a valid group name
-# #   kubernetes_groups = ["masters"]
-# # }
+  # Use "masters" as a valid group name
+  kubernetes_groups = ["masters"]
+}
 
 # ##############################
 # # EKS Access Policy for Admin Access
