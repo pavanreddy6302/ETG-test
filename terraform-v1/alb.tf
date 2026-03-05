@@ -86,7 +86,8 @@ resource "helm_release" "aws_load_balancer_controller" {
 
   set {
     name  = "vpcId"
-    value = aws_vpc.eks_vpc.id
+    #value = aws_vpc.eks_vpc.id
+    value = var.vpc_name
   }
 
   timeout = 600
